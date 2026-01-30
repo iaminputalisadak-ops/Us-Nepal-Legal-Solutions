@@ -1,0 +1,77 @@
+===========================================
+US-NEPAL LEGAL SOLUTIONS - QUICK SETUP
+===========================================
+
+STEP 1: SETUP DATABASE
+----------------------
+1. Open XAMPP Control Panel
+2. Start MySQL service
+3. Open phpMyAdmin: http://localhost/phpmyadmin
+4. Click "Import" tab
+5. Choose file: database/schema.sql
+6. Click "Go"
+
+Default admin credentials will be created:
+   Username: admin
+   Password: admin123
+
+STEP 2: SETUP PHP BACKEND
+-------------------------
+1. Copy the entire "backend" folder to:
+   C:\xampp\htdocs\backend\
+
+2. If your MySQL has a password, edit:
+   C:\xampp\htdocs\backend\config.php
+   Update DB_PASS with your MySQL password
+
+3. Test backend is working:
+   Open: http://localhost/backend/login.php
+   Should see JSON response (even if error, that's OK)
+
+STEP 3: START REACT APP
+-----------------------
+1. Open terminal in project folder
+2. Run: npm run dev
+3. Open the URL shown (usually http://localhost:5175)
+
+STEP 4: LOGIN AS ADMIN
+----------------------
+1. On the homepage, click "Admin Login" button (bottom left)
+2. Enter credentials:
+   Username: admin
+   Password: admin123
+3. Click Login
+
+You'll be redirected to the Admin Dashboard!
+
+===========================================
+TROUBLESHOOTING
+===========================================
+
+Problem: "Database connection failed"
+Solution: 
+- Make sure MySQL is running in XAMPP
+- Check database name is: us_nepal_legal_db
+- Verify MySQL credentials in config.php
+
+Problem: "Network error" when logging in
+Solution:
+- Make sure backend folder is in C:\xampp\htdocs\backend\
+- Test: http://localhost/backend/login.php should work
+- Check CORS settings in config.php match your React port
+
+Problem: "Invalid username or password"
+Solution:
+- Make sure database was imported correctly
+- Default username: admin, password: admin123
+- Check phpMyAdmin to verify admin user exists
+
+===========================================
+FILE LOCATIONS
+===========================================
+
+Database: database/schema.sql
+Backend: backend/ (copy to C:\xampp\htdocs\backend\)
+Frontend: src/ (React components)
+
+===========================================

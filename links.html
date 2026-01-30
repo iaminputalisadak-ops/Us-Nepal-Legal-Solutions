@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>US-NEPAL LEGAL SOLUTIONS - Quick Links</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1f5e2e 0%, #1a5127 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 3rem;
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #1f5e2e;
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+        }
+        .subtitle {
+            color: #5a6b5f;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+        .link-section {
+            margin-bottom: 2rem;
+        }
+        .link-section h2 {
+            color: #1f5e2e;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .link-button {
+            display: block;
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: #1f5e2e;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+            border: 2px solid #1f5e2e;
+        }
+        .link-button:hover {
+            background: #1a5127;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(31, 94, 46, 0.3);
+        }
+        .link-button.secondary {
+            background: white;
+            color: #1f5e2e;
+        }
+        .link-button.secondary:hover {
+            background: #f5f7f5;
+        }
+        .credentials {
+            background: #f5f7f5;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border-left: 4px solid #1f5e2e;
+        }
+        .credentials p {
+            margin: 0.25rem 0;
+            color: #1f1f1f;
+            font-size: 0.9rem;
+        }
+        .credentials strong {
+            color: #1f5e2e;
+        }
+        .note {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>US-NEPAL LEGAL SOLUTIONS</h1>
+        <p class="subtitle">Quick Access Links</p>
+
+        <div class="link-section">
+            <h2>🌐 Public Homepage (Viewers)</h2>
+            <a href="http://localhost:5175" class="link-button secondary" target="_blank">
+                Open Public Website
+            </a>
+            <p style="color: #5a6b5f; font-size: 0.85rem; margin-top: 0.5rem;">
+                This is the public-facing website that visitors see.
+            </p>
+        </div>
+
+        <div class="link-section">
+            <h2>🔐 Admin Login</h2>
+            <a href="http://localhost:5175/login" class="link-button" target="_blank">
+                Open Login Page (/login)
+            </a>
+            <a href="http://localhost:5175/admin" class="link-button secondary" target="_blank">
+                Open Admin Dashboard (/admin)
+            </a>
+            <a href="http://localhost:5175?login=true" class="link-button secondary" target="_blank">
+                (Legacy) Open Login (?login=true)
+            </a>
+            <div class="credentials">
+                <p><strong>Username:</strong> admin</p>
+                <p><strong>Password:</strong> admin123</p>
+            </div>
+            <p style="color: #5a6b5f; font-size: 0.85rem; margin-top: 0.5rem;">
+                Login to manage all website content.
+            </p>
+        </div>
+
+        <div class="note">
+            <strong>Note:</strong> Make sure your React dev server is running (npm run dev) and the port number matches (5175, 5176, etc.). Check your terminal for the exact port.
+        </div>
+    </div>
+</body>
+</html>

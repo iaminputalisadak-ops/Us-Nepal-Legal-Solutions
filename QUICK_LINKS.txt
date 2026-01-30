@@ -1,0 +1,78 @@
+╔══════════════════════════════════════════════════════════════╗
+║          QUICK ACCESS LINKS - US-NEPAL LEGAL SOLUTIONS       ║
+╚══════════════════════════════════════════════════════════════╝
+
+🌐 VIEWER / PUBLIC HOMEPAGE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   http://localhost:5175
+   
+   This is the public-facing website that visitors see.
+   All content is dynamically loaded from the database.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔐 ADMIN LOGIN PAGE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   http://localhost:5175/login
+   http://localhost:5175/admin
+   
+   Legacy (also works):
+   http://localhost:5175?admin=true
+   http://localhost:5175?login=true
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+👤 ADMIN CREDENTIALS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Username: admin
+   Password: admin123
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 OTHER USEFUL LINKS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Backend API:     http://localhost/backend/
+   phpMyAdmin:      http://localhost/phpmyadmin
+   XAMPP Control:   C:\xampp\xampp-control.exe
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📝 QUICK START GUIDE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. VIEW THE WEBSITE (Public):
+   → Open: http://localhost:5175
+   → This shows the public homepage
+
+2. LOGIN AS ADMIN:
+   → Open: http://localhost:5175/login
+   → Enter: admin / admin123
+   → Click "Login"
+
+3. MANAGE CONTENT:
+   → After login, you'll see the Admin Dashboard
+   → Use the tabs to manage:
+     • Lawyers
+     • Practice Areas
+     • Publications
+     • Client Logos
+     • Journals
+     • Insights
+     • Hero Section
+     • Feature Strips
+
+4. VIEW CHANGES:
+   → After making changes, refresh the public page
+   → Open: http://localhost:5175
+   → Your changes will appear immediately!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️  IMPORTANT NOTES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   • Make sure React dev server is running (npm run dev)
+   • Make sure XAMPP MySQL is running
+   • Make sure backend is in C:\xampp\htdocs\backend\
+   • Port number may vary (5175, 5176, etc.) - check terminal
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

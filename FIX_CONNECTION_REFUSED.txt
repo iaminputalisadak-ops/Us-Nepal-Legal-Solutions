@@ -1,0 +1,89 @@
+═══════════════════════════════════════════════════════════════
+  FIX: ERR_CONNECTION_REFUSED - Apache Not Running
+═══════════════════════════════════════════════════════════════
+
+🔴 ERROR YOU'RE SEEING:
+   "Connection Failed - ERR_CONNECTION_REFUSED"
+   When trying to access: http://localhost/backend/login.php
+
+✅ THIS MEANS: Apache is NOT running in XAMPP
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔧 IMMEDIATE FIX (3 STEPS):
+
+STEP 1: START APACHE
+───────────────────────────────────────────────────────────────
+1. Open XAMPP Control Panel
+2. Find "Apache" in the list
+3. Click the "Start" button next to Apache
+4. Wait until Apache shows GREEN (running)
+5. If it shows RED or won't start, see "Troubleshooting" below
+
+STEP 2: VERIFY BACKEND FOLDER EXISTS
+───────────────────────────────────────────────────────────────
+1. Open File Explorer
+2. Navigate to: C:\xampp\htdocs\
+3. Check if "backend" folder exists there
+4. If NOT, copy it:
+   • Copy: c:\Users\Ghost\Downloads\New folder\backend\
+   • Paste to: C:\xampp\htdocs\backend\
+
+STEP 3: TEST AGAIN
+───────────────────────────────────────────────────────────────
+1. Open browser: http://localhost/backend/login.php
+2. Should now show JSON response (not connection error!)
+3. If still error, see troubleshooting below
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️  IF APACHE WON'T START:
+
+Problem: Port 80 is already in use
+Solution:
+1. In XAMPP, click "Config" next to Apache
+2. Select "httpd.conf"
+3. Find "Listen 80" and change to "Listen 8080"
+4. Save and close
+5. Start Apache again
+6. Update backend URL to: http://localhost:8080/backend/
+
+Problem: Permission denied
+Solution:
+1. Right-click XAMPP Control Panel
+2. Select "Run as Administrator"
+3. Try starting Apache again
+
+Problem: Apache starts then stops immediately
+Solution:
+1. Click "Logs" button next to Apache in XAMPP
+2. Check error.log for specific error
+3. Common fix: Change port from 80 to 8080 (see above)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ SUCCESS CHECKLIST:
+
+After fixing, verify:
+☐ Apache shows GREEN in XAMPP
+☐ MySQL shows GREEN in XAMPP  
+☐ http://localhost/backend/login.php shows JSON (not error)
+☐ http://localhost/phpmyadmin opens successfully
+☐ React app can login without network error
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 QUICK REFERENCE:
+
+XAMPP Control Panel Location:
+   C:\xampp\xampp-control.exe
+
+Backend Must Be Here:
+   C:\xampp\htdocs\backend\
+
+Test URLs:
+   Backend:  http://localhost/backend/login.php
+   Database: http://localhost/phpmyadmin
+   React:    http://localhost:5175
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
