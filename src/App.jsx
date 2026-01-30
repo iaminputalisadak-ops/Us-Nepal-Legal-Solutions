@@ -404,15 +404,6 @@ export default function App({ navigate, route }) {
           </div>
           <nav className="nav">
             <a
-              href="/#home"
-              onClick={(e) => {
-                if (typeof navigate === "function") e.preventDefault();
-                goToHomeSection("home");
-              }}
-            >
-              Home
-            </a>
-            <a
               href="/#about"
               onClick={(e) => {
                 if (typeof navigate === "function") e.preventDefault();
@@ -1071,17 +1062,6 @@ export default function App({ navigate, route }) {
               <li>Lawyers</li>
               <li>Careers</li>
               <li>Contact</li>
-            </ul>
-          </div>
-          <div>
-            <h4>Lawyers</h4>
-            <ul>
-              <li>Pradeep Thapa</li>
-              <li>Kedar Pyakurel</li>
-              <li>Muktinath Acharya</li>
-              <li>Amit Kerna</li>
-              <li>Deepak Khanal</li>
-              <li>Sudeep Pradhan</li>
             </ul>
           </div>
           <div>
