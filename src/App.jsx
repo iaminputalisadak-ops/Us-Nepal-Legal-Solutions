@@ -20,6 +20,8 @@ export default function App({ navigate, route }) {
   const [featureStrips, setFeatureStrips] = useState([]);
   const [siteSettings, setSiteSettings] = useState({});
   const [loading, setLoading] = useState(true);
+  const [lawyersSlide, setLawyersSlide] = useState(0);
+  const [lawyersPerView, setLawyersPerView] = useState(4);
 
   const [consultForm, setConsultForm] = useState({
     name: "",
@@ -35,6 +37,18 @@ export default function App({ navigate, route }) {
 
   useEffect(() => {
     fetchAllContent();
+  }, []);
+
+  // Lawyers slider: responsive items per view
+  useEffect(() => {
+    const compute = () => {
+      const w = Number(window?.innerWidth || 1200);
+      const next = w < 640 ? 1 : w < 900 ? 2 : w < 1200 ? 3 : 4;
+      setLawyersPerView(next);
+    };
+    compute();
+    window.addEventListener("resize", compute);
+    return () => window.removeEventListener("resize", compute);
   }, []);
 
   // Live update: when admin saves content in another tab, refresh homepage data
@@ -256,6 +270,25 @@ export default function App({ navigate, route }) {
     return s.length > max ? `${s.slice(0, max).trim()}…` : s;
   };
 
+  const lawyersSlidesCount = Math.max(1, Math.ceil(lawyersForHome.length / Math.max(1, lawyersPerView)));
+  const canSlideLawyers = lawyersSlidesCount > 1;
+
+  useEffect(() => {
+    setLawyersSlide((prev) => Math.min(Math.max(0, prev), lawyersSlidesCount - 1));
+  }, [lawyersSlidesCount]);
+
+  const lawyersStartIndex = lawyersSlide * lawyersPerView;
+  const lawyersVisible = lawyersForHome.slice(lawyersStartIndex, lawyersStartIndex + lawyersPerView);
+
+  const goPrevLawyers = () => {
+    if (!canSlideLawyers) return;
+    setLawyersSlide((prev) => (prev - 1 + lawyersSlidesCount) % lawyersSlidesCount);
+  };
+  const goNextLawyers = () => {
+    if (!canSlideLawyers) return;
+    setLawyersSlide((prev) => (prev + 1) % lawyersSlidesCount);
+  };
+
   const submitConsultation = async (e) => {
     e.preventDefault();
     setConsultResult("");
@@ -404,24 +437,6 @@ export default function App({ navigate, route }) {
           </div>
           <nav className="nav">
             <a
-              href="/#about"
-              onClick={(e) => {
-                if (typeof navigate === "function") e.preventDefault();
-                goToHomeSection("about");
-              }}
-            >
-              About
-            </a>
-            <a
-              href="/#practice"
-              onClick={(e) => {
-                if (typeof navigate === "function") e.preventDefault();
-                goToHomeSection("practice");
-              }}
-            >
-              Practice Areas
-            </a>
-            <a
               href="/lawyers"
               onClick={(e) => {
                 // SPA navigation when available
@@ -434,13 +449,13 @@ export default function App({ navigate, route }) {
               Lawyers
             </a>
             <a
-              href="/#articles"
+              href="/#about"
               onClick={(e) => {
                 if (typeof navigate === "function") e.preventDefault();
-                goToHomeSection("articles");
+                goToHomeSection("about");
               }}
             >
-              Articles
+              About Us
             </a>
             <a
               href="/#contact"
@@ -449,7 +464,25 @@ export default function App({ navigate, route }) {
                 goToHomeSection("contact");
               }}
             >
-              Contact
+              Contact Us
+            </a>
+            <a
+              href="/#practice"
+              onClick={(e) => {
+                if (typeof navigate === "function") e.preventDefault();
+                goToHomeSection("practice");
+              }}
+            >
+              Practice Areas
+            </a>
+            <a
+              href="/#articles"
+              onClick={(e) => {
+                if (typeof navigate === "function") e.preventDefault();
+                goToHomeSection("articles");
+              }}
+            >
+              Articles
             </a>
           </nav>
         </div>
@@ -747,9 +780,28 @@ export default function App({ navigate, route }) {
             {loading ? (
               <p className="text-center text-sm text-neutral-600">Loading lawyers...</p>
             ) : lawyersForHome.length > 0 ? (
-              <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {lawyersForHome.slice(0, 4).map((lawyer) => (
-                  <article key={lawyer.id} className="mx-auto w-full max-w-[320px]">
+              <>
+                <div className="lawyers-carousel" aria-label="Lawyers slider">
+                  {canSlideLawyers ? (
+                    <button
+                      type="button"
+                      className="lawyers-carousel__arrow lawyers-carousel__arrow--left"
+                      onClick={goPrevLawyers}
+                      aria-label="Previous lawyers"
+                    >
+                      ‹
+                    </button>
+                  ) : null}
+
+                  <div
+                    className="lawyers-carousel__track"
+                    style={{ ["--cols"]: String(Math.max(1, lawyersPerView)) }}
+                  >
+                    {lawyersVisible.map((lawyer, idx) => (
+                      <article
+                        key={String(lawyer?.id ?? lawyer?.name ?? idx)}
+                        className="mx-auto w-full max-w-[320px]"
+                      >
                     <div className="aspect-square w-full overflow-hidden bg-neutral-100">
                       <img
                         src={lawyer.image_url || "https://via.placeholder.com/600x600?text=No+Image"}
@@ -771,9 +823,37 @@ export default function App({ navigate, route }) {
                     {lawyer.focus ? (
                       <p className="mt-3 text-xs leading-5 text-neutral-700">{lawyer.focus}</p>
                     ) : null}
-                  </article>
-                ))}
-              </div>
+                      </article>
+                    ))}
+                  </div>
+
+                  {canSlideLawyers ? (
+                    <button
+                      type="button"
+                      className="lawyers-carousel__arrow lawyers-carousel__arrow--right"
+                      onClick={goNextLawyers}
+                      aria-label="Next lawyers"
+                    >
+                      ›
+                    </button>
+                  ) : null}
+                </div>
+
+                {canSlideLawyers ? (
+                  <div className="lawyers-carousel__dots" aria-label="Lawyers slider pagination">
+                    {Array.from({ length: lawyersSlidesCount }).map((_, i) => (
+                      <button
+                        key={String(i)}
+                        type="button"
+                        className={`lawyers-carousel__dot ${i === lawyersSlide ? "is-active" : ""}`}
+                        aria-label={`Go to lawyers slide ${i + 1}`}
+                        aria-current={i === lawyersSlide ? "true" : "false"}
+                        onClick={() => setLawyersSlide(i)}
+                      />
+                    ))}
+                  </div>
+                ) : null}
+              </>
             ) : (
               <p className="text-center text-sm text-neutral-600">No lawyers available</p>
             )}
