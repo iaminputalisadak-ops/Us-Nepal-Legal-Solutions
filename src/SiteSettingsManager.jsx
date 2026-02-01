@@ -23,6 +23,7 @@ const DEFAULTS = {
   whatsapp_link: "",
   facebook_url: "",
   instagram_url: "",
+  tiktok_url: "",
   linkedin_url: "",
   youtube_url: "",
 };
@@ -353,6 +354,9 @@ export default function SiteSettingsManager({ token: tokenProp }) {
           </div>
         </div>
 
+        <p className="mt-2 text-sm text-neutral-600">
+          WhatsApp number or link is used for the WhatsApp icon below &quot;Send Message&quot; on the contact form.
+        </p>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-neutral-800">WhatsApp Number (optional)</label>
@@ -379,10 +383,14 @@ export default function SiteSettingsManager({ token: tokenProp }) {
 
       <div className="rounded-2xl border border-neutral-200 bg-white p-4 sm:p-6">
         <h3 className="text-lg font-bold text-neutral-900">Social Links (optional)</h3>
+        <p className="mt-1 text-sm text-neutral-600">
+          Add profile links for Instagram, Facebook, WhatsApp &amp; TikTok. These appear as icons below &quot;Send Message&quot; on the contact form. Paste full URLs (e.g. https://facebook.com/yourpage).
+        </p>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           {[
             ["facebook_url", "Facebook URL"],
             ["instagram_url", "Instagram URL"],
+            ["tiktok_url", "TikTok URL"],
             ["linkedin_url", "LinkedIn URL"],
             ["youtube_url", "YouTube URL"],
           ].map(([key, label]) => (

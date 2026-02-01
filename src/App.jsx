@@ -638,6 +638,53 @@ export default function App({ navigate, route }) {
               </div>
             </section>
 
+            {/* Message us strip - always visible on homepage */}
+            <section className="message-us-strip" aria-label="Message us on social media">
+              <div className="container message-us-strip__content">
+                <p className="message-us-strip__text">
+                  You can also message us on Instagram, Facebook, WhatsApp &amp; TikTok
+                </p>
+                <div className="message-us-strip__icons">
+                  {siteSettings?.facebook_url ? (
+                    <a href={siteSettings.facebook_url} target="_blank" rel="noreferrer" aria-label="Facebook" title="Facebook" className="message-us-strip__icon">
+                      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="currentColor"><path d="M13.5 21v-7h2.4l.4-3H13.5V9.2c0-.9.3-1.6 1.6-1.6H16V5c-.5-.1-1.5-.2-2.6-.2-2.6 0-4.4 1.6-4.4 4.6V11H6.8v3H9v7h4.5Z" /></svg>
+                    </a>
+                  ) : (
+                    <span className="message-us-strip__icon message-us-strip__icon--disabled" title="Add Facebook URL in Admin → Site Settings" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M13.5 21v-7h2.4l.4-3H13.5V9.2c0-.9.3-1.6 1.6-1.6H16V5c-.5-.1-1.5-.2-2.6-.2-2.6 0-4.4 1.6-4.4 4.6V11H6.8v3H9v7h4.5Z" /></svg>
+                    </span>
+                  )}
+                  {siteSettings?.instagram_url ? (
+                    <a href={siteSettings.instagram_url} target="_blank" rel="noreferrer" aria-label="Instagram" title="Instagram" className="message-us-strip__icon">
+                      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="currentColor"><path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9A5.5 5.5 0 0 1 16.5 22h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9Zm4.5 3.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5Zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5Zm5.2-2.2a1 1 0 1 1-1 1 1 1 0 0 1 1-1Z" /></svg>
+                    </a>
+                  ) : (
+                    <span className="message-us-strip__icon message-us-strip__icon--disabled" title="Add Instagram URL in Admin → Site Settings" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9A5.5 5.5 0 0 1 16.5 22h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9Zm4.5 3.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5Zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5Zm5.2-2.2a1 1 0 1 1-1 1 1 1 0 0 1 1-1Z" /></svg>
+                    </span>
+                  )}
+                  {whatsappHref ? (
+                    <a href={whatsappHref} target="_blank" rel="noreferrer" aria-label="WhatsApp" title="WhatsApp" className="message-us-strip__icon">
+                      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="currentColor"><path d="M12 2a9.7 9.7 0 0 0-8.3 14.8L2.5 22l5.4-1.1A9.7 9.7 0 1 0 12 2Zm0 2a7.7 7.7 0 0 1 0 15.4 7.6 7.6 0 0 1-3.8-1l-.5-.3-3.1.6.7-3-.3-.5A7.7 7.7 0 0 1 12 4Zm-3.1 4.5c-.2 0-.5.1-.7.3-.2.2-.8.8-.8 2 0 1.2.8 2.4.9 2.6.1.2 1.6 2.6 4 3.6 2 .8 2.4.7 2.8.6.4-.1 1.3-.6 1.5-1.2.2-.6.2-1.1.1-1.2-.1-.1-.4-.2-.8-.4-.4-.2-1.3-.7-1.5-.8-.2-.1-.4-.2-.6.2-.2.4-.7.8-.8 1-.1.2-.3.2-.6.1-.3-.1-1.1-.4-2.1-1.3-.8-.7-1.3-1.6-1.4-1.9-.1-.3 0-.4.1-.5l.4-.4c.1-.1.2-.3.3-.5.1-.2 0-.4 0-.6 0-.2-.6-1.6-.8-2.2-.2-.6-.4-.5-.6-.5Z" /></svg>
+                    </a>
+                  ) : (
+                    <span className="message-us-strip__icon message-us-strip__icon--disabled" title="Add WhatsApp in Admin → Site Settings" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2a9.7 9.7 0 0 0-8.3 14.8L2.5 22l5.4-1.1A9.7 9.7 0 1 0 12 2Zm0 2a7.7 7.7 0 0 1 0 15.4 7.6 7.6 0 0 1-3.8-1l-.5-.3-3.1.6.7-3-.3-.5A7.7 7.7 0 0 1 12 4Zm-3.1 4.5c-.2 0-.5.1-.7.3-.2.2-.8.8-.8 2 0 1.2.8 2.4.9 2.6.1.2 1.6 2.6 4 3.6 2 .8 2.4.7 2.8.6.4-.1 1.3-.6 1.5-1.2.2-.6.2-1.1.1-1.2-.1-.1-.4-.2-.8-.4-.4-.2-1.3-.7-1.5-.8-.2-.1-.4-.2-.6.2-.2.4-.7.8-.8 1-.1.2-.3.2-.6.1-.3-.1-1.1-.4-2.1-1.3-.8-.7-1.3-1.6-1.4-1.9-.1-.3 0-.4.1-.5l.4-.4c.1-.1.2-.3.3-.5.1-.2 0-.4 0-.6 0-.2-.6-1.6-.8-2.2-.2-.6-.4-.5-.6-.5Z" /></svg>
+                    </span>
+                  )}
+                  {siteSettings?.tiktok_url ? (
+                    <a href={siteSettings.tiktok_url} target="_blank" rel="noreferrer" aria-label="TikTok" title="TikTok" className="message-us-strip__icon">
+                      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="currentColor"><path d="M14 2h2c.2 2 1.5 3.8 3.6 4.4V8c-1.5-.1-2.9-.6-4-1.5V15a6 6 0 1 1-6-6c.4 0 .7 0 1 .1V11a3.9 3.9 0 0 0-1-.1 4 4 0 1 0 4 4V2Z" /></svg>
+                    </a>
+                  ) : (
+                    <span className="message-us-strip__icon message-us-strip__icon--disabled" title="Add TikTok URL in Admin → Site Settings" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M14 2h2c.2 2 1.5 3.8 3.6 4.4V8c-1.5-.1-2.9-.6-4-1.5V15a6 6 0 1 1-6-6c.4 0 .7 0 1 .1V11a3.9 3.9 0 0 0-1-.1 4 4 0 1 0 4 4V2Z" /></svg>
+                    </span>
+                  )}
+                </div>
+              </div>
+            </section>
+
             <section id="practice" className="bg-white py-14">
               <div className="mx-auto w-[min(1100px,92%)]">
                 <div className="text-center">
@@ -800,7 +847,21 @@ export default function App({ navigate, route }) {
                     {lawyersVisible.map((lawyer, idx) => (
                       <article
                         key={String(lawyer?.id ?? lawyer?.name ?? idx)}
-                        className="mx-auto w-full max-w-[320px]"
+                        className="lawyers-carousel__item mx-auto w-full max-w-[320px]"
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => {
+                          const id = String(lawyer?.id ?? "").trim();
+                          if (!id) return;
+                          go(`/lawyers/${encodeURIComponent(id)}`);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key !== "Enter" && e.key !== " ") return;
+                          e.preventDefault();
+                          const id = String(lawyer?.id ?? "").trim();
+                          if (!id) return;
+                          go(`/lawyers/${encodeURIComponent(id)}`);
+                        }}
                       >
                     <div className="aspect-square w-full overflow-hidden bg-neutral-100">
                       <img
@@ -1050,17 +1111,118 @@ export default function App({ navigate, route }) {
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={consultSubmitting}
-                  className="mt-2 inline-flex rounded-md bg-brand-900 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-950 disabled:cursor-not-allowed disabled:opacity-70"
-                >
-                  {consultSubmitting ? "Sending..." : "Send Message"}
-                </button>
+                <div className="mt-2 flex justify-center">
+                  <button
+                    type="submit"
+                    disabled={consultSubmitting}
+                    className="inline-flex rounded-md bg-brand-900 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-950 disabled:cursor-not-allowed disabled:opacity-70"
+                  >
+                    {consultSubmitting ? "Sending..." : "Send Message"}
+                  </button>
+                </div>
 
                 {consultResult ? (
                   <div className="text-sm text-white/90">{consultResult}</div>
                 ) : null}
+
+                <div className="contact-social-strip" aria-label="Message us on social media">
+                  <div className="contact-social-strip__icons">
+                    {siteSettings?.youtube_url ? (
+                      <a
+                        href={siteSettings.youtube_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label="YouTube"
+                        title="YouTube"
+                        className="contact-social-strip__icon"
+                      >
+                        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor">
+                          <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.6 3.7 12 3.7 12 3.7s-7.6 0-9.4.4A3 3 0 0 0 .5 6.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.8.4 9.4.4 9.4.4s7.6 0 9.4-.4a3 3 0 0 0 2.1-2.1A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.8ZM9.6 15.6V8.4L15.8 12l-6.2 3.6Z" />
+                        </svg>
+                      </a>
+                    ) : (
+                      <span className="contact-social-strip__icon contact-social-strip__icon--disabled" title="Add YouTube URL in Admin → Site Settings" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.6 3.7 12 3.7 12 3.7s-7.6 0-9.4.4A3 3 0 0 0 .5 6.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.8.4 9.4.4 9.4.4s7.6 0 9.4-.4a3 3 0 0 0 2.1-2.1A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.8ZM9.6 15.6V8.4L15.8 12l-6.2 3.6Z" /></svg>
+                      </span>
+                    )}
+
+                    {siteSettings?.instagram_url ? (
+                      <a
+                        href={siteSettings.instagram_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label="Instagram"
+                        title="Instagram"
+                        className="contact-social-strip__icon"
+                      >
+                        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor">
+                          <path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9A5.5 5.5 0 0 1 16.5 22h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9Zm4.5 3.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5Zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5Zm5.2-2.2a1 1 0 1 1-1 1 1 1 0 0 1 1-1Z" />
+                        </svg>
+                      </a>
+                    ) : (
+                      <span className="contact-social-strip__icon contact-social-strip__icon--disabled" title="Add Instagram URL in Admin → Site Settings" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9A5.5 5.5 0 0 1 16.5 22h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9Zm4.5 3.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5Zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5Zm5.2-2.2a1 1 0 1 1-1 1 1 1 0 0 1 1-1Z" /></svg>
+                      </span>
+                    )}
+
+                    {siteSettings?.facebook_url ? (
+                      <a
+                        href={siteSettings.facebook_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label="Facebook"
+                        title="Facebook"
+                        className="contact-social-strip__icon"
+                      >
+                        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor">
+                          <path d="M13.5 21v-7h2.4l.4-3H13.5V9.2c0-.9.3-1.6 1.6-1.6H16V5c-.5-.1-1.5-.2-2.6-.2-2.6 0-4.4 1.6-4.4 4.6V11H6.8v3H9v7h4.5Z" />
+                        </svg>
+                      </a>
+                    ) : (
+                      <span className="contact-social-strip__icon contact-social-strip__icon--disabled" title="Add Facebook URL in Admin → Site Settings" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M13.5 21v-7h2.4l.4-3H13.5V9.2c0-.9.3-1.6 1.6-1.6H16V5c-.5-.1-1.5-.2-2.6-.2-2.6 0-4.4 1.6-4.4 4.6V11H6.8v3H9v7h4.5Z" /></svg>
+                      </span>
+                    )}
+
+                    {siteSettings?.tiktok_url ? (
+                      <a
+                        href={siteSettings.tiktok_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label="TikTok"
+                        title="TikTok"
+                        className="contact-social-strip__icon"
+                      >
+                        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor">
+                          <path d="M14 2h2c.2 2 1.5 3.8 3.6 4.4V8c-1.5-.1-2.9-.6-4-1.5V15a6 6 0 1 1-6-6c.4 0 .7 0 1 .1V11a3.9 3.9 0 0 0-1-.1 4 4 0 1 0 4 4V2Z" />
+                        </svg>
+                      </a>
+                    ) : (
+                      <span className="contact-social-strip__icon contact-social-strip__icon--disabled" title="Add TikTok URL in Admin → Site Settings" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M14 2h2c.2 2 1.5 3.8 3.6 4.4V8c-1.5-.1-2.9-.6-4-1.5V15a6 6 0 1 1-6-6c.4 0 .7 0 1 .1V11a3.9 3.9 0 0 0-1-.1 4 4 0 1 0 4 4V2Z" /></svg>
+                      </span>
+                    )}
+
+                    {whatsappHref ? (
+                      <a
+                        href={whatsappHref}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label="WhatsApp"
+                        title="WhatsApp"
+                        className="contact-social-strip__icon"
+                      >
+                        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor">
+                          <path d="M12 2a9.7 9.7 0 0 0-8.3 14.8L2.5 22l5.4-1.1A9.7 9.7 0 1 0 12 2Zm0 2a7.7 7.7 0 0 1 0 15.4 7.6 7.6 0 0 1-3.8-1l-.5-.3-3.1.6.7-3-.3-.5A7.7 7.7 0 0 1 12 4Zm-3.1 4.5c-.2 0-.5.1-.7.3-.2.2-.8.8-.8 2 0 1.2.8 2.4.9 2.6.1.2 1.6 2.6 4 3.6 2 .8 2.4.7 2.8.6.4-.1 1.3-.6 1.5-1.2.2-.6.2-1.1.1-1.2-.1-.1-.4-.2-.8-.4-.4-.2-1.3-.7-1.5-.8-.2-.1-.4-.2-.6.2-.2.4-.7.8-.8 1-.1.2-.3.2-.6.1-.3-.1-1.1-.4-2.1-1.3-.8-.7-1.3-1.6-1.4-1.9-.1-.3 0-.4.1-.5l.4-.4c.1-.1.2-.3.3-.5.1-.2 0-.4 0-.6 0-.2-.6-1.6-.8-2.2-.2-.6-.4-.5-.6-.5Z" />
+                        </svg>
+                      </a>
+                    ) : (
+                      <span className="contact-social-strip__icon contact-social-strip__icon--disabled" title="Add WhatsApp in Admin → Site Settings" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2a9.7 9.7 0 0 0-8.3 14.8L2.5 22l5.4-1.1A9.7 9.7 0 1 0 12 2Zm0 2a7.7 7.7 0 0 1 0 15.4 7.6 7.6 0 0 1-3.8-1l-.5-.3-3.1.6.7-3-.3-.5A7.7 7.7 0 0 1 12 4Zm-3.1 4.5c-.2 0-.5.1-.7.3-.2.2-.8.8-.8 2 0 1.2.8 2.4.9 2.6.1.2 1.6 2.6 4 3.6 2 .8 2.4.7 2.8.6.4-.1 1.3-.6 1.5-1.2.2-.6.2-1.1.1-1.2-.1-.1-.4-.2-.8-.4-.4-.2-1.3-.7-1.5-.8-.2-.1-.4-.2-.6.2-.2.4-.7.8-.8 1-.1.2-.3.2-.6.1-.3-.1-1.1-.4-2.1-1.3-.8-.7-1.3-1.6-1.4-1.9-.1-.3 0-.4.1-.5l.4-.4c.1-.1.2-.3.3-.5.1-.2 0-.4 0-.6 0-.2-.6-1.6-.8-2.2-.2-.6-.4-.5-.6-.5Z" /></svg>
+                      </span>
+                    )}
+                  </div>
+                </div>
               </form>
             </div>
           </div>

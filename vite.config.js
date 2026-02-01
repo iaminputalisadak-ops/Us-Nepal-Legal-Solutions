@@ -45,7 +45,7 @@ export default defineConfig(async () => {
     plugins: [react()],
     server: {
       port: 5175,
-      strictPort: true,
+      strictPort: false,
       host: true,
       proxy: {
         // Serve uploaded images from a persistent Apache folder
