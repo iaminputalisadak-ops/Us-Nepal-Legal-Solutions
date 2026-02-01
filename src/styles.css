@@ -480,7 +480,7 @@ h1 {
 /* Contact social icons strip (near Send Message) */
 .contact-social-strip {
   margin-top: 1rem;
-  background: #1fb565;
+  background: var(--c-brand-900);
   border-radius: 10px;
   padding: 0.6rem 0.75rem;
   display: flex;
@@ -494,7 +494,7 @@ h1 {
   width: 38px;
   height: 38px;
   border-radius: 8px;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
   display: inline-flex;
   align-items: center;
@@ -502,7 +502,7 @@ h1 {
   transition: transform 0.15s ease, background 0.2s ease;
 }
 .contact-social-strip__icon:hover {
-  background: rgba(0, 0, 0, 0.32);
+  background: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
 }
 .contact-social-strip__icon--disabled {
@@ -510,7 +510,7 @@ h1 {
   cursor: default;
 }
 .contact-social-strip__icon--disabled:hover {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.12);
   transform: none;
 }
 
