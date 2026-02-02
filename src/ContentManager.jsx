@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { API_URL } from "./config.js";
 import ImageField from "./ImageField.jsx";
 import BackgroundPositionPicker from "./BackgroundPositionPicker.jsx";
@@ -42,7 +44,7 @@ const CONTENT_TYPES = {
       "background_position",
     ],
   },
-  about_content: { name: "About Us", fields: ["title", "text", "image_url"] },
+  about_content: { name: "About Us", fields: ["title", "text"] },
   feature_strips: { name: "Feature Strips", fields: ["title"] },
 };
 
@@ -344,14 +346,37 @@ export default function ContentManager({ contentType, token: tokenProp }) {
           <label className="block text-sm font-semibold text-neutral-800">
             {label} {field === "title" && "*"}
           </label>
-          <textarea
-            name={field}
-            value={formData[field] || ""}
-            onChange={handleInputChange}
-            rows={field === "main_title" ? 3 : 4}
-            required={field === "title"}
-            className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-brand-700 focus:ring-4 focus:ring-brand-100"
-          />
+          <div className="rounded-lg border border-neutral-300 bg-white p-2 focus-within:border-brand-700 focus-within:ring-4 focus-within:ring-brand-100">
+            <CKEditor
+              editor={ClassicEditor}
+              data={formData[field] || ""}
+              onChange={(_, editor) => {
+                const data = editor.getData();
+                setFormData((prev) => ({ ...prev, [field]: data }));
+              }}
+              config={{
+                toolbar: [
+                  "heading",
+                  "|",
+                  "bold",
+                  "italic",
+                  "link",
+                  "|",
+                  "bulletedList",
+                  "numberedList",
+                  "|",
+                  "outdent",
+                  "indent",
+                  "|",
+                  "blockQuote",
+                  "insertTable",
+                  "mediaEmbed",
+                  "undo",
+                  "redo",
+                ],
+              }}
+            />
+          </div>
         </div>
       );
     }

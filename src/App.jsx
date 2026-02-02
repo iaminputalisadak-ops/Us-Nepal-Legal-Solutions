@@ -13,6 +13,7 @@ export default function App({ navigate, route }) {
   const [clientLogos, setClientLogos] = useState([]);
   const [journals, setJournals] = useState([]);
   const [insights, setInsights] = useState([]);
+  const [aboutContent, setAboutContent] = useState([]);
   const [heroContent, setHeroContent] = useState(null);
   const [heroBanners, setHeroBanners] = useState([]);
   const [heroIndex, setHeroIndex] = useState(0);
@@ -70,6 +71,7 @@ export default function App({ navigate, route }) {
 
   const routePath = String(route || window.location.pathname || "/").toLowerCase();
   const isLawyersRoute = routePath === "/lawyers" || routePath.startsWith("/lawyers/");
+  const isAboutRoute = routePath === "/about";
 
   const applyFavicon = (href) => {
     if (typeof document === "undefined") return;
@@ -126,26 +128,28 @@ export default function App({ navigate, route }) {
   const fetchAllContent = async () => {
     try {
       // Fetch all content in parallel
-      const [lawyersRes, practiceRes, pubRes, logosRes, journalsRes, insightsRes, heroRes, heroBannersRes, featuresRes, settingsRes] = await Promise.all([
+      const [lawyersRes, practiceRes, pubRes, logosRes, journalsRes, insightsRes, aboutRes, heroRes, heroBannersRes, featuresRes, settingsRes] = await Promise.all([
         fetch(`${API_URL}/lawyers.php`),
         fetch(`${API_URL}/content_api.php?type=practice_areas`),
         fetch(`${API_URL}/content_api.php?type=publications`),
         fetch(`${API_URL}/content_api.php?type=client_logos`),
         fetch(`${API_URL}/content_api.php?type=journals`),
         fetch(`${API_URL}/content_api.php?type=insights`),
+        fetch(`${API_URL}/content_api.php?type=about_content`),
         fetch(`${API_URL}/content_api.php?type=hero_content`),
         fetch(`${API_URL}/content_api.php?type=hero_banners`),
         fetch(`${API_URL}/content_api.php?type=feature_strips`),
         fetch(`${API_URL}/site_settings.php`),
       ]);
 
-      const [lawyersData, practiceData, pubData, logosData, journalsData, insightsData, heroData, heroBannersData, featuresData, settingsData] = await Promise.all([
+      const [lawyersData, practiceData, pubData, logosData, journalsData, insightsData, aboutData, heroData, heroBannersData, featuresData, settingsData] = await Promise.all([
         lawyersRes.json(),
         practiceRes.json(),
         pubRes.json(),
         logosRes.json(),
         journalsRes.json(),
         insightsRes.json(),
+        aboutRes.json(),
         heroRes.json(),
         heroBannersRes.json(),
         featuresRes.json(),
@@ -158,6 +162,7 @@ export default function App({ navigate, route }) {
       if (logosData.success) setClientLogos(logosData.data || []);
       if (journalsData.success) setJournals(journalsData.data || []);
       if (insightsData.success) setInsights(insightsData.data || []);
+      if (aboutData.success) setAboutContent(aboutData.data || []);
       if (heroData.success && heroData.data && heroData.data.length > 0) setHeroContent(heroData.data[0]);
       if (heroBannersData?.success) setHeroBanners(heroBannersData.data || []);
       if (featuresData.success) setFeatureStrips(featuresData.data || []);
@@ -251,6 +256,7 @@ export default function App({ navigate, route }) {
     publications && publications.length > 0 ? publications : DUMMY_PUBLICATIONS;
   const insightsForHome =
     insights && insights.length > 0 ? insights : DUMMY_INSIGHTS;
+  const aboutForHome = aboutContent && aboutContent.length > 0 ? aboutContent[0] : null;
   const footerBgUrl = String(siteSettings?.footer_background_image_url || "").trim();
   const footerBgFit = String(siteSettings?.footer_background_fit || "cover").toLowerCase();
   const footerBgPos = String(siteSettings?.footer_background_position || "center");
@@ -449,10 +455,12 @@ export default function App({ navigate, route }) {
               Lawyers
             </a>
             <a
-              href="/#about"
+              href="/about"
               onClick={(e) => {
-                if (typeof navigate === "function") e.preventDefault();
-                goToHomeSection("about");
+                if (typeof navigate === "function") {
+                  e.preventDefault();
+                  go("/about");
+                }
               }}
             >
               About Us
@@ -490,6 +498,37 @@ export default function App({ navigate, route }) {
       <main>
         {isLawyersRoute ? (
           <LawyersPage navigate={navigate} route={routePath} />
+        ) : isAboutRoute ? (
+          <section className="section bg-white">
+            <div className="container two-column">
+              <div>
+                <h2 className="center" style={{ textAlign: "left" }}>
+                  {aboutForHome?.title || "About Us"}
+                </h2>
+                {aboutForHome?.text ? (
+                  <div
+                    className="muted-text"
+                    style={{ lineHeight: 1.7 }}
+                    dangerouslySetInnerHTML={{ __html: aboutForHome.text }}
+                  />
+                ) : (
+                  <p className="muted-text">
+                    Share your firm story, focus areas, and the value you deliver to clients.
+                  </p>
+                )}
+              </div>
+              {aboutForHome?.image_url ? (
+                <div>
+                  <img
+                    src={aboutForHome.image_url}
+                    alt={aboutForHome.title || "About Us"}
+                    className="rounded-2xl border border-neutral-200 shadow-sm"
+                    loading="lazy"
+                  />
+                </div>
+              ) : null}
+            </div>
+          </section>
         ) : (
           <>
             <section
