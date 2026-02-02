@@ -121,6 +121,28 @@ function ensureHeroBgColumns($conn, $table) {
     }
 }
 
+function ensureAboutTable($conn) {
+    // Create about_content table if missing (for older databases)
+    try {
+        $conn->query("
+            CREATE TABLE IF NOT EXISTS about_content (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                title VARCHAR(300) NOT NULL,
+                text TEXT NOT NULL,
+                image_url VARCHAR(500),
+                display_order INT DEFAULT 0,
+                is_active TINYINT(1) DEFAULT 1,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                INDEX idx_active (is_active),
+                INDEX idx_order (display_order)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        ");
+    } catch (Exception $e) {
+        // ignore - if DB user lacks ALTER/CREATE permissions, requests may still fail and return the error
+    }
+}
+
 $type = $_GET['type'] ?? '';
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -137,6 +159,9 @@ if ($method === 'GET') {
         if ($type === 'hero_content' || $type === 'hero_banners') {
             ensureHeroTables($conn);
             ensureHeroBgColumns($conn, $table);
+        }
+        if ($type === 'about_content') {
+            ensureAboutTable($conn);
         }
         
         // Hero content has different structure
@@ -183,6 +208,9 @@ elseif ($method === 'POST') {
         if ($type === 'hero_content' || $type === 'hero_banners') {
             ensureHeroTables($conn);
             ensureHeroBgColumns($conn, $table);
+        }
+        if ($type === 'about_content') {
+            ensureAboutTable($conn);
         }
         $fields = [];
         $values = [];
@@ -251,6 +279,9 @@ elseif ($method === 'PUT') {
             ensureHeroTables($conn);
             ensureHeroBgColumns($conn, $table);
         }
+        if ($type === 'about_content') {
+            ensureAboutTable($conn);
+        }
         $fields = [];
         $values = [];
         
@@ -301,6 +332,9 @@ elseif ($method === 'DELETE') {
         $table = $type;
         if ($type === 'hero_content' || $type === 'hero_banners') {
             ensureHeroTables($conn);
+        }
+        if ($type === 'about_content') {
+            ensureAboutTable($conn);
         }
         $stmt = $conn->prepare("DELETE FROM {$table} WHERE id = ?");
         $stmt->bind_param("i", $id);
