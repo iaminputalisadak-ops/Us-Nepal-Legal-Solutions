@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import React, { useEffect, useRef, useState } from "react";
 import { API_URL } from "./config.js";
 import ImageField from "./ImageField.jsx";
 import BackgroundPositionPicker from "./BackgroundPositionPicker.jsx";
@@ -44,7 +42,7 @@ const CONTENT_TYPES = {
       "background_position",
     ],
   },
-  about_content: { name: "About Us", fields: ["title", "text"] },
+  about_content: { name: "About Us", fields: ["title", "text"], disableAdd: true },
   feature_strips: { name: "Feature Strips", fields: ["title"] },
 };
 
@@ -54,15 +52,82 @@ export default function ContentManager({ contentType, token: tokenProp }) {
   const [showForm, setShowForm] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [formData, setFormData] = useState({});
+  const [editorReady, setEditorReady] = useState(false);
 
   const config = CONTENT_TYPES[contentType];
   if (!config) return <div className="text-sm text-rose-700">Invalid content type</div>;
   const isSingle = config.single === true;
+  const canCreate = config.disableAdd !== true;
 
   useEffect(() => {
     fetchItems();
     initializeForm();
   }, [contentType]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.CKEDITOR) {
+      setEditorReady(true);
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://cdn.ckeditor.com/4.22.1/full/ckeditor.js";
+    script.async = true;
+    script.onload = () => setEditorReady(true);
+    script.onerror = () => setEditorReady(false);
+    document.body.appendChild(script);
+
+    return () => {
+      script.remove();
+    };
+  }, []);
+
+  const RichTextEditor = ({ id, value, onChange, rows = 4, required }) => {
+    const textareaRef = useRef(null);
+
+    useEffect(() => {
+      if (!editorReady || !window.CKEDITOR || !textareaRef.current) return;
+
+      if (window.CKEDITOR.instances[id]) {
+        window.CKEDITOR.instances[id].destroy(true);
+      }
+
+      const editor = window.CKEDITOR.replace(id, {
+        height: rows === 3 ? 120 : 160,
+        removePlugins: "image,uploadimage,uploadwidget,cloudservices",
+      });
+
+      editor.setData(value || "");
+      editor.on("change", () => {
+        const data = editor.getData();
+        onChange(data);
+      });
+
+      return () => {
+        if (editor && editor.destroy) editor.destroy(true);
+      };
+    }, [editorReady, id]);
+
+    useEffect(() => {
+      if (!editorReady || !window.CKEDITOR || !window.CKEDITOR.instances[id]) return;
+      const editor = window.CKEDITOR.instances[id];
+      if (editor.getData() !== (value || "")) {
+        editor.setData(value || "");
+      }
+    }, [value, editorReady, id]);
+
+    return (
+      <textarea
+        ref={textareaRef}
+        id={id}
+        defaultValue={value || ""}
+        required={required}
+        rows={rows}
+        className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-brand-700 focus:ring-4 focus:ring-brand-100"
+      />
+    );
+  };
 
   const initializeForm = () => {
     const initialData = {};
@@ -347,35 +412,27 @@ export default function ContentManager({ contentType, token: tokenProp }) {
             {label} {field === "title" && "*"}
           </label>
           <div className="rounded-lg border border-neutral-300 bg-white p-2 focus-within:border-brand-700 focus-within:ring-4 focus-within:ring-brand-100">
-            <CKEditor
-              editor={ClassicEditor}
-              data={formData[field] || ""}
-              onChange={(_, editor) => {
-                const data = editor.getData();
-                setFormData((prev) => ({ ...prev, [field]: data }));
-              }}
-              config={{
-                toolbar: [
-                  "heading",
-                  "|",
-                  "bold",
-                  "italic",
-                  "link",
-                  "|",
-                  "bulletedList",
-                  "numberedList",
-                  "|",
-                  "outdent",
-                  "indent",
-                  "|",
-                  "blockQuote",
-                  "insertTable",
-                  "mediaEmbed",
-                  "undo",
-                  "redo",
-                ],
-              }}
-            />
+            {editorReady ? (
+              <RichTextEditor
+                id={`editor_${contentType}_${field}`}
+                value={formData[field] || ""}
+                onChange={(val) => setFormData((prev) => ({ ...prev, [field]: val }))}
+                rows={field === "main_title" ? 3 : 4}
+                required={field === "title"}
+              />
+            ) : (
+              <div className="space-y-2">
+                <textarea
+                  name={field}
+                  value={formData[field] || ""}
+                  onChange={handleInputChange}
+                  rows={field === "main_title" ? 3 : 4}
+                  required={field === "title"}
+                  className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-brand-700 focus:ring-4 focus:ring-brand-100"
+                />
+                <div className="text-xs text-neutral-500">Loading editor…</div>
+              </div>
+            )}
           </div>
         </div>
       );
@@ -490,7 +547,7 @@ export default function ContentManager({ contentType, token: tokenProp }) {
               {items?.[0] ? "Edit" : "Set Hero"}
             </button>
           </div>
-        ) : (
+        ) : items?.[0] || canCreate ? (
           <button
             type="button"
             onClick={() => {
@@ -499,13 +556,14 @@ export default function ContentManager({ contentType, token: tokenProp }) {
                 else setShowForm(true);
                 return;
               }
+              if (!canCreate && !items?.[0]) return;
               setShowForm(true);
             }}
             className="inline-flex items-center justify-center rounded-lg bg-brand-700 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-800"
           >
-            {isSingle ? (items?.[0] ? "Edit" : "Set Hero") : "+ Add New"}
+            {items?.[0] || !canCreate ? "Edit" : isSingle ? "Set Hero" : "+ Add New"}
           </button>
-        )}
+        ) : null}
       </header>
 
       {showForm && (
@@ -554,7 +612,7 @@ export default function ContentManager({ contentType, token: tokenProp }) {
       <div className="rounded-2xl border border-neutral-200 bg-white">
         {items.length === 0 ? (
           <div className="p-6 text-center text-sm text-neutral-600">
-            No items found. Click “Add New” to get started.
+            No items found.
           </div>
         ) : (
           <div className="overflow-x-auto">

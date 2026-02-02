@@ -181,7 +181,10 @@ export default function App({ navigate, route }) {
   const tagline = siteSettings?.site_tagline || "LEGAL SOLUTIONS";
   const buildWhatsAppLink = () => {
     const direct = String(siteSettings?.whatsapp_link || "").trim();
-    if (direct) return direct;
+    if (direct) {
+      if (direct.startsWith("http://") || direct.startsWith("https://")) return direct;
+      return `https://${direct}`;
+    }
 
     let digits = String(siteSettings?.whatsapp_number || "").replace(/[^\d]/g, "");
     if (!digits) return "";
@@ -1166,22 +1169,22 @@ export default function App({ navigate, route }) {
 
                 <div className="contact-social-strip" aria-label="Message us on social media">
                   <div className="contact-social-strip__icons">
-                    {siteSettings?.youtube_url ? (
+                    {siteSettings?.linkedin_url ? (
                       <a
-                        href={siteSettings.youtube_url}
+                        href={siteSettings.linkedin_url}
                         target="_blank"
                         rel="noreferrer"
-                        aria-label="YouTube"
-                        title="YouTube"
+                        aria-label="LinkedIn"
+                        title="LinkedIn"
                         className="contact-social-strip__icon"
                       >
                         <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor">
-                          <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.6 3.7 12 3.7 12 3.7s-7.6 0-9.4.4A3 3 0 0 0 .5 6.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.8.4 9.4.4 9.4.4s7.6 0 9.4-.4a3 3 0 0 0 2.1-2.1A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.8ZM9.6 15.6V8.4L15.8 12l-6.2 3.6Z" />
+                          <path d="M4.98 3.5c0 1.38-1.11 2.5-2.48 2.5S0 4.88 0 3.5 1.11 1 2.5 1s2.48 1.12 2.48 2.5ZM0.5 23.5h4V7.5h-4v16Zm7 0h4v-8.1c0-4.3 5.5-4.6 5.5 0v8.1h4v-9.6c0-7.6-8.5-7.3-9.5-3.6V7.5h-4v16Z" />
                         </svg>
                       </a>
                     ) : (
-                      <span className="contact-social-strip__icon contact-social-strip__icon--disabled" title="Add YouTube URL in Admin → Site Settings" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.6 3.7 12 3.7 12 3.7s-7.6 0-9.4.4A3 3 0 0 0 .5 6.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.8.4 9.4.4 9.4.4s7.6 0 9.4-.4a3 3 0 0 0 2.1-2.1A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.8ZM9.6 15.6V8.4L15.8 12l-6.2 3.6Z" /></svg>
+                      <span className="contact-social-strip__icon contact-social-strip__icon--disabled" title="Add LinkedIn URL in Admin → Site Settings" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M4.98 3.5c0 1.38-1.11 2.5-2.48 2.5S0 4.88 0 3.5 1.11 1 2.5 1s2.48 1.12 2.48 2.5ZM0.5 23.5h4V7.5h-4v16Zm7 0h4v-8.1c0-4.3 5.5-4.6 5.5 0v8.1h4v-9.6c0-7.6-8.5-7.3-9.5-3.6V7.5h-4v16Z" /></svg>
                       </span>
                     )}
 

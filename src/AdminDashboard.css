@@ -193,6 +193,23 @@
   margin-bottom: 0.5rem;
 }
 
+/* CKEditor dropdowns inside admin modal */
+.ck.ck-dropdown__panel,
+.ck.ck-balloon-panel {
+  z-index: 2000 !important;
+}
+.ck.ck-toolbar {
+  z-index: 2001;
+}
+
+/* CKEditor 4 dropdowns/dialogs inside admin modal */
+.cke_panel,
+.cke_dialog,
+.cke_combopanel,
+.cke_menu_panel {
+  z-index: 3000 !important;
+}
+
 @media (max-width: 768px) {
   .admin-header__content {
     flex-direction: column;

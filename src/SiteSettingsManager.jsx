@@ -390,9 +390,9 @@ export default function SiteSettingsManager({ token: tokenProp }) {
           {[
             ["facebook_url", "Facebook URL"],
             ["instagram_url", "Instagram URL"],
+            ["whatsapp_link", "WhatsApp URL"],
             ["tiktok_url", "TikTok URL"],
             ["linkedin_url", "LinkedIn URL"],
-            ["youtube_url", "YouTube URL"],
           ].map(([key, label]) => (
             <div key={key} className="space-y-2">
               <label className="block text-sm font-semibold text-neutral-800">{label}</label>
