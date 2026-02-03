@@ -16,9 +16,9 @@ const DEFAULTS = {
   // Hero background rendering
   hero_background_fit: "cover", // cover | contain
   hero_background_position: "center", // e.g. "center", "top", "50% 30%"
-  contact_email: "info@primelawnepal.com",
-  contact_phone: "+977-01-4102849",
-  contact_address: "Anamnagar, Kathmandu",
+  contact_email: "info@usnepallegalsolutions.com",
+  contact_phone: "+977-01-4685468",
+  contact_address: "Annamnagar, Nepal",
   whatsapp_number: "",
   whatsapp_link: "",
   facebook_url: "",

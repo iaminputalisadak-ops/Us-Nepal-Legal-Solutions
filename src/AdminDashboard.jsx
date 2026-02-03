@@ -124,6 +124,18 @@ export default function AdminDashboard({ admin, onLogout, token }) {
             About Us
           </button>
           <button
+            className={`tab-button ${activeTab === "why_choose_us" ? "active" : ""}`}
+            onClick={() => setActiveTab("why_choose_us")}
+          >
+            Why Choose Us
+          </button>
+          <button
+            className={`tab-button ${activeTab === "consultation_fees" ? "active" : ""}`}
+            onClick={() => setActiveTab("consultation_fees")}
+          >
+            Consultation Fees
+          </button>
+          <button
             className={`tab-button ${activeTab === "site_settings" ? "active" : ""}`}
             onClick={() => setActiveTab("site_settings")}
           >
@@ -189,6 +201,8 @@ export default function AdminDashboard({ admin, onLogout, token }) {
         {activeTab === "hero_content" && <HeroSectionManager token={token} />}
         {activeTab === "feature_strips" && <ContentManager contentType="feature_strips" token={token} />}
         {activeTab === "about_content" && <ContentManager contentType="about_content" token={token} />}
+        {activeTab === "why_choose_us" && <ContentManager contentType="why_choose_us" token={token} />}
+        {activeTab === "consultation_fees" && <ContentManager contentType="consultation_fees" token={token} />}
         {activeTab === "site_settings" && <SiteSettingsManager token={token} />}
         {activeTab === "consultations" && <ConsultationsManagement token={token} />}
       </main>

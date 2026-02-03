@@ -43,6 +43,8 @@ const CONTENT_TYPES = {
     ],
   },
   about_content: { name: "About Us", fields: ["title", "text"], disableAdd: true },
+  why_choose_us: { name: "Why Clients Choose Us", fields: ["title", "text"], single: true, supportsOrder: false },
+  consultation_fees: { name: "Consultation Fees", fields: ["title", "text"], single: true, supportsOrder: false, singleLabel: "Set Fees" },
   feature_strips: { name: "Feature Strips", fields: ["title"] },
 };
 
@@ -58,6 +60,7 @@ export default function ContentManager({ contentType, token: tokenProp }) {
   if (!config) return <div className="text-sm text-rose-700">Invalid content type</div>;
   const isSingle = config.single === true;
   const canCreate = config.disableAdd !== true;
+  const singleCtaLabel = config.singleLabel || (contentType === "hero_content" ? "Set Hero" : "Set");
 
   useEffect(() => {
     fetchItems();
@@ -561,7 +564,7 @@ export default function ContentManager({ contentType, token: tokenProp }) {
             }}
             className="inline-flex items-center justify-center rounded-lg bg-brand-700 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-800"
           >
-            {items?.[0] || !canCreate ? "Edit" : isSingle ? "Set Hero" : "+ Add New"}
+            {items?.[0] || !canCreate ? "Edit" : isSingle ? singleCtaLabel : "+ Add New"}
           </button>
         ) : null}
       </header>

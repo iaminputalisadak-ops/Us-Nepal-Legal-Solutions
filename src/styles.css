@@ -540,6 +540,35 @@ h1 {
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
+.consultation-fees {
+  margin-top: 2.5rem;
+  background: #ffffff;
+  border: 1px solid var(--c-border);
+  border-radius: 12px;
+  padding: 1.5rem 1.75rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.04);
+}
+.consultation-fees__title {
+  margin-bottom: 0.5rem;
+  color: var(--c-brand);
+}
+.consultation-fees__intro {
+  margin: 0 0 0.9rem;
+  color: var(--c-muted);
+  line-height: 1.7;
+}
+.consultation-fees ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  line-height: 1.8;
+  color: var(--c-text);
+}
+.consultation-fees__note {
+  margin-top: 0.9rem;
+  color: var(--c-muted);
+  font-size: 0.95rem;
+}
+
 .card {
   background: #ffffff;
   padding: 1.6rem;

@@ -46,7 +46,7 @@ function verifyAdminSession() {
 $allowedTypes = [
     'practice_areas', 'publications', 'client_logos', 
     'journals', 'insights', 'hero_content', 'feature_strips', 'hero_banners',
-    'about_content'
+    'about_content', 'why_choose_us', 'consultation_fees'
 ];
 
 function ensureHeroTables($conn) {
@@ -143,6 +143,44 @@ function ensureAboutTable($conn) {
     }
 }
 
+function ensureWhyChooseTable($conn) {
+    // Create why_choose_us table if missing (for older databases)
+    try {
+        $conn->query("
+            CREATE TABLE IF NOT EXISTS why_choose_us (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                title VARCHAR(300) NOT NULL,
+                text TEXT NOT NULL,
+                is_active TINYINT(1) DEFAULT 1,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                INDEX idx_active (is_active)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        ");
+    } catch (Exception $e) {
+        // ignore - if DB user lacks ALTER/CREATE permissions, requests may still fail and return the error
+    }
+}
+
+function ensureConsultationFeesTable($conn) {
+    // Create consultation_fees table if missing (single-row content)
+    try {
+        $conn->query("
+            CREATE TABLE IF NOT EXISTS consultation_fees (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                title VARCHAR(300) NOT NULL,
+                text TEXT NOT NULL,
+                is_active TINYINT(1) DEFAULT 1,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                INDEX idx_active (is_active)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        ");
+    } catch (Exception $e) {
+        // ignore - if DB user lacks ALTER/CREATE permissions, requests may still fail and return the error
+    }
+}
+
 $type = $_GET['type'] ?? '';
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -162,6 +200,12 @@ if ($method === 'GET') {
         }
         if ($type === 'about_content') {
             ensureAboutTable($conn);
+        }
+        if ($type === 'why_choose_us') {
+            ensureWhyChooseTable($conn);
+        }
+        if ($type === 'consultation_fees') {
+            ensureConsultationFeesTable($conn);
         }
         
         // Hero content has different structure
@@ -211,6 +255,12 @@ elseif ($method === 'POST') {
         }
         if ($type === 'about_content') {
             ensureAboutTable($conn);
+        }
+        if ($type === 'why_choose_us') {
+            ensureWhyChooseTable($conn);
+        }
+        if ($type === 'consultation_fees') {
+            ensureConsultationFeesTable($conn);
         }
         $fields = [];
         $values = [];
@@ -282,6 +332,12 @@ elseif ($method === 'PUT') {
         if ($type === 'about_content') {
             ensureAboutTable($conn);
         }
+        if ($type === 'why_choose_us') {
+            ensureWhyChooseTable($conn);
+        }
+        if ($type === 'consultation_fees') {
+            ensureConsultationFeesTable($conn);
+        }
         $fields = [];
         $values = [];
         
@@ -335,6 +391,12 @@ elseif ($method === 'DELETE') {
         }
         if ($type === 'about_content') {
             ensureAboutTable($conn);
+        }
+        if ($type === 'why_choose_us') {
+            ensureWhyChooseTable($conn);
+        }
+        if ($type === 'consultation_fees') {
+            ensureConsultationFeesTable($conn);
         }
         $stmt = $conn->prepare("DELETE FROM {$table} WHERE id = ?");
         $stmt->bind_param("i", $id);

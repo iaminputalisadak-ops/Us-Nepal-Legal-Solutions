@@ -14,6 +14,8 @@ export default function App({ navigate, route }) {
   const [journals, setJournals] = useState([]);
   const [insights, setInsights] = useState([]);
   const [aboutContent, setAboutContent] = useState([]);
+  const [whyChooseContent, setWhyChooseContent] = useState([]);
+  const [consultationFeesContent, setConsultationFeesContent] = useState([]);
   const [heroContent, setHeroContent] = useState(null);
   const [heroBanners, setHeroBanners] = useState([]);
   const [heroIndex, setHeroIndex] = useState(0);
@@ -128,7 +130,7 @@ export default function App({ navigate, route }) {
   const fetchAllContent = async () => {
     try {
       // Fetch all content in parallel
-      const [lawyersRes, practiceRes, pubRes, logosRes, journalsRes, insightsRes, aboutRes, heroRes, heroBannersRes, featuresRes, settingsRes] = await Promise.all([
+      const [lawyersRes, practiceRes, pubRes, logosRes, journalsRes, insightsRes, aboutRes, whyChooseRes, feesRes, heroRes, heroBannersRes, featuresRes, settingsRes] = await Promise.all([
         fetch(`${API_URL}/lawyers.php`),
         fetch(`${API_URL}/content_api.php?type=practice_areas`),
         fetch(`${API_URL}/content_api.php?type=publications`),
@@ -136,13 +138,15 @@ export default function App({ navigate, route }) {
         fetch(`${API_URL}/content_api.php?type=journals`),
         fetch(`${API_URL}/content_api.php?type=insights`),
         fetch(`${API_URL}/content_api.php?type=about_content`),
+        fetch(`${API_URL}/content_api.php?type=why_choose_us`),
+        fetch(`${API_URL}/content_api.php?type=consultation_fees`),
         fetch(`${API_URL}/content_api.php?type=hero_content`),
         fetch(`${API_URL}/content_api.php?type=hero_banners`),
         fetch(`${API_URL}/content_api.php?type=feature_strips`),
         fetch(`${API_URL}/site_settings.php`),
       ]);
 
-      const [lawyersData, practiceData, pubData, logosData, journalsData, insightsData, aboutData, heroData, heroBannersData, featuresData, settingsData] = await Promise.all([
+      const [lawyersData, practiceData, pubData, logosData, journalsData, insightsData, aboutData, whyChooseData, feesData, heroData, heroBannersData, featuresData, settingsData] = await Promise.all([
         lawyersRes.json(),
         practiceRes.json(),
         pubRes.json(),
@@ -150,6 +154,8 @@ export default function App({ navigate, route }) {
         journalsRes.json(),
         insightsRes.json(),
         aboutRes.json(),
+        whyChooseRes.json(),
+        feesRes.json(),
         heroRes.json(),
         heroBannersRes.json(),
         featuresRes.json(),
@@ -163,6 +169,8 @@ export default function App({ navigate, route }) {
       if (journalsData.success) setJournals(journalsData.data || []);
       if (insightsData.success) setInsights(insightsData.data || []);
       if (aboutData.success) setAboutContent(aboutData.data || []);
+      if (whyChooseData.success) setWhyChooseContent(whyChooseData.data || []);
+      if (feesData.success) setConsultationFeesContent(feesData.data || []);
       if (heroData.success && heroData.data && heroData.data.length > 0) setHeroContent(heroData.data[0]);
       if (heroBannersData?.success) setHeroBanners(heroBannersData.data || []);
       if (featuresData.success) setFeatureStrips(featuresData.data || []);
@@ -181,17 +189,37 @@ export default function App({ navigate, route }) {
   const tagline = siteSettings?.site_tagline || "LEGAL SOLUTIONS";
   const buildWhatsAppLink = () => {
     const direct = String(siteSettings?.whatsapp_link || "").trim();
+    const number = String(siteSettings?.whatsapp_number || "").trim();
+    const normalizeDigits = (value) => {
+      let digits = String(value || "").replace(/[^\d]/g, "");
+      if (!digits) return "";
+      if (digits.startsWith("0")) digits = digits.replace(/^0+/, "");
+      // If admin enters local Nepali mobile number (10 digits starting 98), add country code.
+      if (digits.length === 10 && digits.startsWith("98")) digits = `977${digits}`;
+      return digits;
+    };
+
     if (direct) {
+      const lower = direct.toLowerCase();
+      const directDigits = normalizeDigits(direct);
+      // If a full URL is provided, use it.
       if (direct.startsWith("http://") || direct.startsWith("https://")) return direct;
+      // If user pasted a wa.me link without protocol.
+      if (lower.startsWith("wa.me/") || lower.startsWith("api.whatsapp.com/") || lower.startsWith("www.whatsapp.com/")) {
+        return `https://${direct}`;
+      }
+      // If a phone number was pasted into the URL field.
+      if (directDigits) return `https://wa.me/${directDigits}`;
+      // If the direct link is the generic WhatsApp download page, fall back to number.
+      if (lower.includes("whatsapp.com/dl")) {
+        const numberDigits = normalizeDigits(number);
+        return numberDigits ? `https://wa.me/${numberDigits}` : `https://${direct}`;
+      }
       return `https://${direct}`;
     }
 
-    let digits = String(siteSettings?.whatsapp_number || "").replace(/[^\d]/g, "");
-    if (!digits) return "";
-    if (digits.startsWith("0")) digits = digits.replace(/^0+/, "");
-    // If admin enters local Nepali mobile number (10 digits starting 98), add country code.
-    if (digits.length === 10 && digits.startsWith("98")) digits = `977${digits}`;
-    return `https://wa.me/${digits}`;
+    const digits = normalizeDigits(number);
+    return digits ? `https://wa.me/${digits}` : "";
   };
 
   const whatsappHref = buildWhatsAppLink();
@@ -252,14 +280,18 @@ export default function App({ navigate, route }) {
     setHeroIndex((prev) => (prev + 1) % heroSlides.length);
   };
   const heroProgressKey = `${heroIndex}_${sliderSeconds}`;
-  const lawyersForHome = lawyers && lawyers.length > 0 ? lawyers : DUMMY_LAWYERS;
+  const lawyersForHome =
+    loading ? [] : lawyers && lawyers.length > 0 ? lawyers : DUMMY_LAWYERS;
   const practiceForHome =
-    practiceAreas && practiceAreas.length > 0 ? practiceAreas : DUMMY_PRACTICE_AREAS;
+    loading ? [] : practiceAreas && practiceAreas.length > 0 ? practiceAreas : DUMMY_PRACTICE_AREAS;
   const publicationsForHome =
-    publications && publications.length > 0 ? publications : DUMMY_PUBLICATIONS;
+    loading ? [] : publications && publications.length > 0 ? publications : DUMMY_PUBLICATIONS;
   const insightsForHome =
-    insights && insights.length > 0 ? insights : DUMMY_INSIGHTS;
+    loading ? [] : insights && insights.length > 0 ? insights : DUMMY_INSIGHTS;
   const aboutForHome = aboutContent && aboutContent.length > 0 ? aboutContent[0] : null;
+  const whyChooseForHome = whyChooseContent && whyChooseContent.length > 0 ? whyChooseContent[0] : null;
+  const consultationFeesForHome =
+    consultationFeesContent && consultationFeesContent.length > 0 ? consultationFeesContent[0] : null;
   const footerBgUrl = String(siteSettings?.footer_background_image_url || "").trim();
   const footerBgFit = String(siteSettings?.footer_background_fit || "cover").toLowerCase();
   const footerBgPos = String(siteSettings?.footer_background_position || "center");
@@ -356,50 +388,6 @@ export default function App({ navigate, route }) {
           </div>
           <div className="top-bar__actions">
             <span className="pill">{phone}</span>
-            <a
-              className="button button--outline"
-              href="/login"
-              target="_blank"
-              rel="noreferrer"
-              onClick={(e) => {
-                // SPA navigation when available
-                if (typeof navigate === "function") {
-                  e.preventDefault();
-                  go("/login");
-                }
-              }}
-            >
-              Login
-            </a>
-            <a
-              className="button button--outline"
-              href="/admin"
-              target="_blank"
-              rel="noreferrer"
-              onClick={(e) => {
-                // SPA navigation when available
-                if (typeof navigate === "function") {
-                  e.preventDefault();
-                  go("/admin");
-                }
-              }}
-            >
-              Admin
-            </a>
-            <a
-              className="button button--outline"
-              href={whatsappHref || "#"}
-              target="_blank"
-              rel="noreferrer"
-              onClick={(e) => {
-                if (!whatsappHref) {
-                  e.preventDefault();
-                  alert("WhatsApp link is not set yet. Please set it in Admin → Site Settings.");
-                }
-              }}
-            >
-              Book Appointment Whatsapp
-            </a>
           </div>
         </div>
       </div>
@@ -684,7 +672,7 @@ export default function App({ navigate, route }) {
             <section className="message-us-strip" aria-label="Message us on social media">
               <div className="container message-us-strip__content">
                 <p className="message-us-strip__text">
-                  You can also message us on Instagram, Facebook, WhatsApp &amp; TikTok
+                  You can also message us on Instagram, Facebook, WhatsApp, LinkedIn &amp; TikTok
                 </p>
                 <div className="message-us-strip__icons">
                   {siteSettings?.facebook_url ? (
@@ -712,6 +700,15 @@ export default function App({ navigate, route }) {
                   ) : (
                     <span className="message-us-strip__icon message-us-strip__icon--disabled" title="Add WhatsApp in Admin → Site Settings" aria-hidden="true">
                       <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2a9.7 9.7 0 0 0-8.3 14.8L2.5 22l5.4-1.1A9.7 9.7 0 1 0 12 2Zm0 2a7.7 7.7 0 0 1 0 15.4 7.6 7.6 0 0 1-3.8-1l-.5-.3-3.1.6.7-3-.3-.5A7.7 7.7 0 0 1 12 4Zm-3.1 4.5c-.2 0-.5.1-.7.3-.2.2-.8.8-.8 2 0 1.2.8 2.4.9 2.6.1.2 1.6 2.6 4 3.6 2 .8 2.4.7 2.8.6.4-.1 1.3-.6 1.5-1.2.2-.6.2-1.1.1-1.2-.1-.1-.4-.2-.8-.4-.4-.2-1.3-.7-1.5-.8-.2-.1-.4-.2-.6.2-.2.4-.7.8-.8 1-.1.2-.3.2-.6.1-.3-.1-1.1-.4-2.1-1.3-.8-.7-1.3-1.6-1.4-1.9-.1-.3 0-.4.1-.5l.4-.4c.1-.1.2-.3.3-.5.1-.2 0-.4 0-.6 0-.2-.6-1.6-.8-2.2-.2-.6-.4-.5-.6-.5Z" /></svg>
+                    </span>
+                  )}
+                  {siteSettings?.linkedin_url ? (
+                    <a href={siteSettings.linkedin_url} target="_blank" rel="noreferrer" aria-label="LinkedIn" title="LinkedIn" className="message-us-strip__icon">
+                      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="currentColor"><path d="M4.98 3.5c0 1.38-1.11 2.5-2.48 2.5S0 4.88 0 3.5 1.11 1 2.5 1s2.48 1.12 2.48 2.5ZM0.5 23.5h4V7.5h-4v16Zm7 0h4v-8.1c0-4.3 5.5-4.6 5.5 0v8.1h4v-9.6c0-7.6-8.5-7.3-9.5-3.6V7.5h-4v16Z" /></svg>
+                    </a>
+                  ) : (
+                    <span className="message-us-strip__icon message-us-strip__icon--disabled" title="Add LinkedIn URL in Admin → Site Settings" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M4.98 3.5c0 1.38-1.11 2.5-2.48 2.5S0 4.88 0 3.5 1.11 1 2.5 1s2.48 1.12 2.48 2.5ZM0.5 23.5h4V7.5h-4v16Zm7 0h4v-8.1c0-4.3 5.5-4.6 5.5 0v8.1h4v-9.6c0-7.6-8.5-7.3-9.5-3.6V7.5h-4v16Z" /></svg>
                     </span>
                   )}
                   {siteSettings?.tiktok_url ? (
@@ -966,13 +963,21 @@ export default function App({ navigate, route }) {
 
       <section className="section muted">
         <div className="container">
-          <h2 className="center">Why Clients Choose Us?</h2>
-          <p className="center muted-text">
-            US-NEPAL LEGAL SOLUTIONS boasts the best lawyers in Nepal, serving an
-            extensive roster of corporate clients across specialized sectors
-            including Energy, Banking, Insurance, Aviation, Capital Markets, and
-            Infrastructure Law.
-          </p>
+          <h2 className="center">{whyChooseForHome?.title || "Why Clients Choose Us?"}</h2>
+          {whyChooseForHome?.text ? (
+            <div
+              className="center muted-text"
+              style={{ lineHeight: 1.7 }}
+              dangerouslySetInnerHTML={{ __html: whyChooseForHome.text }}
+            />
+          ) : (
+            <p className="center muted-text">
+              US-NEPAL LEGAL SOLUTIONS boasts the best lawyers in Nepal, serving an
+              extensive roster of corporate clients across specialized sectors
+              including Energy, Banking, Insurance, Aviation, Capital Markets, and
+              Infrastructure Law.
+            </p>
+          )}
           <div className="logo-slider">
             <button className="slider-arrow" aria-label="Previous logos">
               ‹
@@ -1047,6 +1052,38 @@ export default function App({ navigate, route }) {
               ))
             ) : (
               <p style={{ gridColumn: "1 / -1", textAlign: "center", color: "#5a6b5f" }}>No journals available</p>
+            )}
+          </div>
+        </div>
+        <div className="container">
+          <div className="consultation-fees">
+            <h2 className="center consultation-fees__title">
+              {consultationFeesForHome?.title || "CONSULTATION FEES"}
+            </h2>
+            {consultationFeesForHome?.text ? (
+              <div
+                className="consultation-fees__intro center"
+                dangerouslySetInnerHTML={{ __html: consultationFeesForHome.text }}
+              />
+            ) : (
+              <>
+                <p className="consultation-fees__intro center">
+                  Consultation fees for the first legal query with the empanelled legal consultants of
+                  US‑Nepal Legal Solutions are outlined below.
+                </p>
+                <ul>
+                  <li>Property disputes — $150 for 30 minutes</li>
+                  <li>Family disputes — $100 for 30 minutes</li>
+                  <li>Business issues — $200 for 30 minutes</li>
+                  <li>Criminal law issues — $200 for 30 minutes</li>
+                  <li>Tax‑related issues — $200 for 30 minutes</li>
+                  <li>Other issues — $100 for 30 minutes</li>
+                </ul>
+                <p className="consultation-fees__note">
+                  Note: The consultation fee will be discussed with the service seeker on a personal basis,
+                  depending on the time required for consultation.
+                </p>
+              </>
             )}
           </div>
         </div>
