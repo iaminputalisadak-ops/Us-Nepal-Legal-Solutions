@@ -51,7 +51,7 @@ TROUBLESHOOTING
 Problem: "Database connection failed"
 Solution: 
 - Make sure MySQL is running in XAMPP
-- Check database name is: us_nepal_legal_db
+- Check database name is: usnepallegalsolu_db
 - Verify MySQL credentials in config.php
 
 Problem: "Network error" when logging in

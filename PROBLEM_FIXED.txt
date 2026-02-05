@@ -42,7 +42,7 @@ Check these in order:
 1. Apache is GREEN in XAMPP ✓
 2. MySQL is GREEN in XAMPP ✓
 3. Backend files exist: C:\xampp\htdocs\backend\login.php ✓
-4. Database exists: us_nepal_legal_db
+4. Database exists: usnepallegalsolu_db
 5. React dev server is running (npm run dev)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

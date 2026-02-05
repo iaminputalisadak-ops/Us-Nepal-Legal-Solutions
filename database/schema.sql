@@ -1,5 +1,5 @@
 -- US-NEPAL LEGAL SOLUTIONS Database Schema
--- Create database
+-- Create database (if not exists)
 CREATE DATABASE IF NOT EXISTS us_nepal_legal_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 USE us_nepal_legal_db;
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS admins (
 -- Password is hashed using password_hash() - this is a placeholder
 -- You should change this password after first login
 INSERT INTO admins (username, email, password, full_name) VALUES
-('admin', 'admin@usnepallegal.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Administrator');
+('admin', 'admin@usnepallegal.com', '$2y$10$eqF05ovfu/oqXjr.Rqqi6.jHoVC90PibiLvUV/P1BKJWlL5AodB2K', 'Administrator');
 
 -- Sessions table for tracking admin sessions
 CREATE TABLE IF NOT EXISTS admin_sessions (
@@ -79,7 +79,7 @@ INSERT INTO lawyers (
   'Banking & Finance, Corporate Advisory',
   'https://images.unsplash.com/photo-1520975958225-3427ee9f5d64?auto=format&fit=crop&w=800&q=80',
   'Sudeep supports lenders and borrowers across financing transactions, documentation, and regulatory compliance. He focuses on clear drafting, risk reduction, and practical execution.',
-  'sudeep.pradhan@primelawnepal.com',
+  'sudeep.pradhan@usnepallegalsolutions.com',
   '+977-9800000004',
   'LLM (Business Law), Kathmandu University',
   '6+ years advising on secured lending, refinancing, and corporate governance matters.',
@@ -94,7 +94,7 @@ INSERT INTO lawyers (
   'Tax, Compliance & Advisory',
   'https://images.unsplash.com/photo-1558222218-b7b54eede3f3?auto=format&fit=crop&w=800&q=80',
   'Deepak advises clients on tax strategy, compliance reviews, and dispute support. He prepares actionable recommendations for management teams and supports audit readiness.',
-  'deepak.khanal@primelawnepal.com',
+  'deepak.khanal@usnepallegalsolutions.com',
   '+977-9800000005',
   'LLB, Nepal Law Campus',
   '5+ years in tax advisory, audit support, and regulatory filings across multiple industries.',
@@ -109,7 +109,7 @@ INSERT INTO lawyers (
   'Commercial Contracts & Dispute Resolution',
   'https://images.unsplash.com/photo-1520975686471-6c2d47f1a0c0?auto=format&fit=crop&w=800&q=80',
   'Amit drafts and negotiates commercial agreements and supports clients in negotiation-led dispute resolution. He focuses on reducing risk while keeping deals practical and enforceable.',
-  'amit.kerna@primelawnepal.com',
+  'amit.kerna@usnepallegalsolutions.com',
   '+977-9800000006',
   'LLB, Kathmandu School of Law',
   '4+ years drafting commercial contracts, advising on claims, and supporting arbitration preparations.',
@@ -322,8 +322,8 @@ INSERT INTO site_settings (setting_key, setting_value, setting_type) VALUES
 ('site_name', 'US-NEPAL LEGAL SOLUTIONS', 'text'),
 ('site_tagline', 'LEGAL SOLUTIONS', 'text'),
 ('favicon_url', '/favicon.svg', 'url'),
-('contact_email', 'info@primelawnepal.com', 'text'),
-('contact_phone', '+977-01-4102849', 'text'),
+('contact_email', 'info@usnepallegalsolutions.com', 'text'),
+('contact_phone', '+1 (785) 506-3402', 'text'),
 ('contact_address', 'Anamnagar, Kathmandu', 'text'),
 ('footer_background_image_url', 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80', 'url')
 ON DUPLICATE KEY UPDATE

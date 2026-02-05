@@ -11,15 +11,16 @@ try {
     echo "<p style='color: green;'>✅ Database connection successful!</p>";
     
     // Check if database exists
-    $result = $conn->query("SHOW DATABASES LIKE 'us_nepal_legal_db'");
+    $dbName = DB_NAME;
+    $result = $conn->query("SHOW DATABASES LIKE '" . $conn->real_escape_string($dbName) . "'");
     if ($result->num_rows > 0) {
-        echo "<p style='color: green;'>✅ Database 'us_nepal_legal_db' exists</p>";
+        echo "<p style='color: green;'>✅ Database '$dbName' exists</p>";
     } else {
-        echo "<p style='color: red;'>❌ Database 'us_nepal_legal_db' does NOT exist. Please import database/schema.sql</p>";
+        echo "<p style='color: red;'>❌ Database '$dbName' does NOT exist. Please import database/schema.sql</p>";
     }
     
     // Check if admins table exists
-    $conn->select_db('us_nepal_legal_db');
+    $conn->select_db($dbName);
     $result = $conn->query("SHOW TABLES LIKE 'admins'");
     if ($result->num_rows > 0) {
         echo "<p style='color: green;'>✅ Table 'admins' exists</p>";

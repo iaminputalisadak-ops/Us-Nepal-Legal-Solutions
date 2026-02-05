@@ -41,6 +41,7 @@ if (empty($username) || empty($password)) {
 }
 
 $conn = getDBConnection();
+ensureAdminTables($conn);
 
 // Prepare statement to prevent SQL injection
 $stmt = $conn->prepare("SELECT id, username, email, password, full_name, is_active FROM admins WHERE username = ? OR email = ?");

@@ -569,6 +569,27 @@ h1 {
   font-size: 0.95rem;
 }
 
+.articles-section {
+  margin-top: 2.5rem;
+}
+
+.articles-section__subtitle {
+  margin-top: 0.6rem;
+  color: var(--c-muted);
+}
+
+.articles-grid .article-card img {
+  height: 190px;
+  object-fit: cover;
+}
+
+.article-card__excerpt {
+  margin-top: 0.6rem;
+  color: var(--c-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
 .card {
   background: #ffffff;
   padding: 1.6rem;
@@ -687,10 +708,10 @@ h1 {
 }
 
 .logo-track {
-  display: flex;
+  display: grid;
   gap: 1.2rem;
-  justify-content: center;
-  flex-wrap: wrap;
+  grid-template-columns: repeat(var(--logo-cols, 4), minmax(0, 1fr));
+  align-items: center;
 }
 
 .logo-card {
@@ -724,15 +745,17 @@ h1 {
   margin-top: 1.4rem;
 }
 
-.slider-dots span {
+.slider-dot {
   width: 8px;
   height: 8px;
   border-radius: 2px;
   background: var(--c-brand);
   opacity: 0.4;
+  border: none;
+  cursor: pointer;
 }
 
-.slider-dots span:first-child {
+.slider-dot.is-active {
   opacity: 1;
 }
 

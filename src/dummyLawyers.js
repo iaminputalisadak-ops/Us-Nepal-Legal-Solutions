@@ -8,7 +8,7 @@ export const DUMMY_LAWYERS = [
       "https://images.unsplash.com/photo-1559548331-f9cb98001426?auto=format&fit=crop&w=1200&q=80",
     bio:
       "Pradeep advises domestic and international clients on complex corporate transactions, cross-border investments, and high-stakes disputes. He is known for pragmatic strategies, clear communication, and meticulous attention to detail.",
-    email: "pradeep.thapa@primelawnepal.com",
+    email: "pradeep.thapa@usnepallegalsolutions.com",
     phone: "+977-9800000001",
     education: "LLM (Corporate Law), Tribhuvan University; LLB (Hons.)",
     experience:
@@ -26,7 +26,7 @@ export const DUMMY_LAWYERS = [
       "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80",
     bio:
       "Kedar represents clients in civil and corporate litigation, with deep experience in constitutional and administrative matters. He combines strong courtroom advocacy with careful legal research.",
-    email: "kedar.pyakurel@primelawnepal.com",
+    email: "kedar.pyakurel@usnepallegalsolutions.com",
     phone: "+977-9800000002",
     education: "LLB, Kathmandu School of Law",
     experience:
@@ -44,7 +44,7 @@ export const DUMMY_LAWYERS = [
       "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=1200&q=80",
     bio:
       "Muktinath focuses on property and family matters, supporting clients through negotiations, documentation, and dispute resolution. He is valued for empathy and clear guidance on sensitive issues.",
-    email: "muktinath.acharya@primelawnepal.com",
+    email: "muktinath.acharya@usnepallegalsolutions.com",
     phone: "+977-9800000003",
     education: "LLB, Tribhuvan University",
     experience:
@@ -62,7 +62,7 @@ export const DUMMY_LAWYERS = [
       "https://images.unsplash.com/photo-1520975958225-3427ee9f5d64?auto=format&fit=crop&w=1200&q=80",
     bio:
       "Sudeep supports lenders and borrowers across financing transactions, documentation, and regulatory compliance. He has handled due diligence for multi-sector portfolios.",
-    email: "sudeep.pradhan@primelawnepal.com",
+    email: "sudeep.pradhan@usnepallegalsolutions.com",
     phone: "+977-9800000004",
     education: "LLM (Business Law), Kathmandu University",
     experience:
@@ -80,7 +80,7 @@ export const DUMMY_LAWYERS = [
       "https://images.unsplash.com/photo-1558222218-b7b54eede3f3?auto=format&fit=crop&w=1200&q=80",
     bio:
       "Deepak advises clients on tax strategy, compliance reviews, and dispute support. He prepares clear, actionable recommendations for management teams.",
-    email: "deepak.khanal@primelawnepal.com",
+    email: "deepak.khanal@usnepallegalsolutions.com",
     phone: "+977-9800000005",
     education: "LLB, Nepal Law Campus",
     experience:
@@ -98,7 +98,7 @@ export const DUMMY_LAWYERS = [
       "https://images.unsplash.com/photo-1520975686471-6c2d47f1a0c0?auto=format&fit=crop&w=1200&q=80",
     bio:
       "Amit drafts and negotiates commercial agreements and supports clients in negotiation-led dispute resolution. He focuses on reducing risk while keeping deals practical and enforceable.",
-    email: "amit.kerna@primelawnepal.com",
+    email: "amit.kerna@usnepallegalsolutions.com",
     phone: "+977-9800000006",
     education: "LLB, Kathmandu School of Law",
     experience:

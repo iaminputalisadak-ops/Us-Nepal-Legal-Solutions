@@ -31,7 +31,7 @@
 4. CHECK DATABASE:
    ───────────────────────────────────────────────────────────
    • Open: http://localhost/phpmyadmin
-   • Check if database "us_nepal_legal_db" exists
+   • Check if database "usnepallegalsolu_db" exists
    • If not, import: database/schema.sql
    ───────────────────────────────────────────────────────────
 
@@ -56,7 +56,7 @@
    ☐ MySQL is running (green in XAMPP)
    ☐ Backend folder is in C:\xampp\htdocs\backend\
    ☐ http://localhost/backend/login.php works
-   ☐ Database us_nepal_legal_db exists
+   ☐ Database usnepallegalsolu_db exists
    ☐ React dev server is running
 
 ═══════════════════════════════════════════════════════════════

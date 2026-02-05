@@ -106,6 +106,13 @@ if ($method === 'POST') {
             $appointment_time = "{$h}:{$m}:00";
         }
     }
+    // If no appointment date/time provided, store the submission time.
+    if (!$appointment_date) {
+        $appointment_date = date('Y-m-d');
+    }
+    if (!$appointment_time) {
+        $appointment_time = date('H:i:s');
+    }
 
     $conn = getDBConnection();
     ensureConsultationsTable($conn);

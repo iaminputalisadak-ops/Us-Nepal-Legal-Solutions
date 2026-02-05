@@ -47,13 +47,13 @@ This error means your React app cannot connect to the PHP backend. Follow these 
      define('DB_HOST', 'localhost');
      define('DB_USER', 'root');
      define('DB_PASS', '');  // Your MySQL password if you set one
-     define('DB_NAME', 'us_nepal_legal_db');
+     define('DB_NAME', 'usnepallegalsolu_db');
      ```
    - If MySQL has a password, update `DB_PASS`
 
 ### 5. **Verify Database Exists**
    - Open: http://localhost/phpmyadmin
-   - Check if database `us_nepal_legal_db` exists
+   - Check if database `usnepallegalsolu_db` exists
    - If not, import `database/schema.sql`
 
 ### 6. **Check CORS Settings**
@@ -99,7 +99,7 @@ This error means your React app cannot connect to the PHP backend. Follow these 
 - [ ] XAMPP MySQL is running (green)
 - [ ] Backend folder is in `C:\xampp\htdocs\backend\`
 - [ ] `http://localhost/backend/login.php` returns JSON
-- [ ] Database `us_nepal_legal_db` exists in phpMyAdmin
+- [ ] Database `usnepallegalsolu_db` exists in phpMyAdmin
 - [ ] React dev server is running (`npm run dev`)
 - [ ] CORS headers match your React port
 

@@ -10,6 +10,7 @@ export default function App({ navigate, route }) {
   const [lawyers, setLawyers] = useState([]);
   const [practiceAreas, setPracticeAreas] = useState([]);
   const [publications, setPublications] = useState([]);
+  const [articles, setArticles] = useState([]);
   const [clientLogos, setClientLogos] = useState([]);
   const [journals, setJournals] = useState([]);
   const [insights, setInsights] = useState([]);
@@ -25,14 +26,13 @@ export default function App({ navigate, route }) {
   const [loading, setLoading] = useState(true);
   const [lawyersSlide, setLawyersSlide] = useState(0);
   const [lawyersPerView, setLawyersPerView] = useState(4);
+  const [logosSlide, setLogosSlide] = useState(0);
+  const [logosPerView, setLogosPerView] = useState(4);
 
   const [consultForm, setConsultForm] = useState({
     name: "",
     email: "",
     phone: "",
-    date: "",
-    hour: "01",
-    minute: "00",
     about: "",
   });
   const [consultSubmitting, setConsultSubmitting] = useState(false);
@@ -48,6 +48,18 @@ export default function App({ navigate, route }) {
       const w = Number(window?.innerWidth || 1200);
       const next = w < 640 ? 1 : w < 900 ? 2 : w < 1200 ? 3 : 4;
       setLawyersPerView(next);
+    };
+    compute();
+    window.addEventListener("resize", compute);
+    return () => window.removeEventListener("resize", compute);
+  }, []);
+
+  // Client logos slider: responsive items per view
+  useEffect(() => {
+    const compute = () => {
+      const w = Number(window?.innerWidth || 1200);
+      const next = w < 640 ? 2 : w < 900 ? 3 : w < 1200 ? 4 : 5;
+      setLogosPerView(next);
     };
     compute();
     window.addEventListener("resize", compute);
@@ -100,16 +112,103 @@ export default function App({ navigate, route }) {
     if (tw) tw.setAttribute("content", href);
   };
 
+  const seoTitleBase = siteSettings?.seo_title || siteSettings?.site_name || "US-NEPAL LEGAL SOLUTIONS";
   useEffect(() => {
-    if (!isLawyersRoute) {
-      const name = siteSettings?.site_name || "US-NEPAL LEGAL SOLUTIONS";
-      document.title = name;
+    if (isLawyersRoute) {
+      document.title = `Lawyers | ${seoTitleBase}`;
+      return;
     }
-  }, [isLawyersRoute, siteSettings?.site_name]);
+    if (seoTitleBase) {
+      document.title = seoTitleBase;
+    }
+  }, [isLawyersRoute, seoTitleBase]);
 
   useEffect(() => {
     applyFavicon(siteSettings?.favicon_url || "/favicon.svg");
   }, [siteSettings?.favicon_url]);
+
+  useEffect(() => {
+    const upsertMeta = (attr, key, content) => {
+      if (!content) return;
+      let tag = document.querySelector(`meta[${attr}="${key}"]`);
+      if (!tag) {
+        tag = document.createElement("meta");
+        tag.setAttribute(attr, key);
+        document.head.appendChild(tag);
+      }
+      tag.setAttribute("content", content);
+    };
+
+    const upsertLink = (rel, href) => {
+      if (!href) return;
+      let link = document.querySelector(`link[rel="${rel}"]`);
+      if (!link) {
+        link = document.createElement("link");
+        link.setAttribute("rel", rel);
+        document.head.appendChild(link);
+      }
+      link.setAttribute("href", href);
+    };
+
+    const title = seoTitleBase;
+    const description =
+      siteSettings?.seo_description ||
+      "US-NEPAL LEGAL SOLUTIONS provides trusted legal services in Nepal across corporate, litigation, and advisory matters.";
+    const keywords = siteSettings?.seo_keywords || "law firm Nepal, corporate law, litigation, legal services";
+    const canonical = siteSettings?.seo_canonical || window.location.href;
+    const ogImage = siteSettings?.seo_og_image || siteSettings?.header_logo_url || "/favicon.svg";
+    const siteName = siteSettings?.site_name || "US-NEPAL LEGAL SOLUTIONS";
+
+    upsertMeta("name", "description", description);
+    upsertMeta("name", "keywords", keywords);
+    upsertMeta("name", "robots", "index,follow");
+    upsertMeta("property", "og:type", "website");
+    upsertMeta("property", "og:site_name", siteName);
+    upsertMeta("property", "og:title", title);
+    upsertMeta("property", "og:description", description);
+    upsertMeta("property", "og:url", canonical);
+    upsertMeta("property", "og:image", ogImage);
+    upsertMeta("name", "twitter:card", "summary_large_image");
+    upsertMeta("name", "twitter:title", title);
+    upsertMeta("name", "twitter:description", description);
+    upsertMeta("name", "twitter:image", ogImage);
+    upsertLink("canonical", canonical);
+
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "LegalService",
+      name: siteName,
+      url: canonical,
+      logo: ogImage,
+      telephone: siteSettings?.contact_phone || "",
+      email: siteSettings?.contact_email || "",
+      address: siteSettings?.contact_address
+        ? {
+            "@type": "PostalAddress",
+            streetAddress: siteSettings.contact_address,
+          }
+        : undefined,
+    };
+    let script = document.getElementById("site-jsonld");
+    if (!script) {
+      script = document.createElement("script");
+      script.type = "application/ld+json";
+      script.id = "site-jsonld";
+      document.head.appendChild(script);
+    }
+    script.textContent = JSON.stringify(jsonLd);
+  }, [
+    seoTitleBase,
+    siteSettings?.seo_description,
+    siteSettings?.seo_keywords,
+    siteSettings?.seo_canonical,
+    siteSettings?.seo_og_image,
+    siteSettings?.site_name,
+    siteSettings?.header_logo_url,
+    siteSettings?.contact_phone,
+    siteSettings?.contact_email,
+    siteSettings?.contact_address,
+  ]);
 
   const goToHomeSection = (hash) => {
     const h = hash.startsWith("#") ? hash : `#${hash}`;
@@ -130,13 +229,14 @@ export default function App({ navigate, route }) {
   const fetchAllContent = async () => {
     try {
       // Fetch all content in parallel
-      const [lawyersRes, practiceRes, pubRes, logosRes, journalsRes, insightsRes, aboutRes, whyChooseRes, feesRes, heroRes, heroBannersRes, featuresRes, settingsRes] = await Promise.all([
+      const [lawyersRes, practiceRes, pubRes, logosRes, journalsRes, insightsRes, articlesRes, aboutRes, whyChooseRes, feesRes, heroRes, heroBannersRes, featuresRes, settingsRes] = await Promise.all([
         fetch(`${API_URL}/lawyers.php`),
         fetch(`${API_URL}/content_api.php?type=practice_areas`),
         fetch(`${API_URL}/content_api.php?type=publications`),
         fetch(`${API_URL}/content_api.php?type=client_logos`),
         fetch(`${API_URL}/content_api.php?type=journals`),
         fetch(`${API_URL}/content_api.php?type=insights`),
+        fetch(`${API_URL}/content_api.php?type=articles`),
         fetch(`${API_URL}/content_api.php?type=about_content`),
         fetch(`${API_URL}/content_api.php?type=why_choose_us`),
         fetch(`${API_URL}/content_api.php?type=consultation_fees`),
@@ -146,13 +246,14 @@ export default function App({ navigate, route }) {
         fetch(`${API_URL}/site_settings.php`),
       ]);
 
-      const [lawyersData, practiceData, pubData, logosData, journalsData, insightsData, aboutData, whyChooseData, feesData, heroData, heroBannersData, featuresData, settingsData] = await Promise.all([
+      const [lawyersData, practiceData, pubData, logosData, journalsData, insightsData, articlesData, aboutData, whyChooseData, feesData, heroData, heroBannersData, featuresData, settingsData] = await Promise.all([
         lawyersRes.json(),
         practiceRes.json(),
         pubRes.json(),
         logosRes.json(),
         journalsRes.json(),
         insightsRes.json(),
+        articlesRes.json(),
         aboutRes.json(),
         whyChooseRes.json(),
         feesRes.json(),
@@ -168,6 +269,7 @@ export default function App({ navigate, route }) {
       if (logosData.success) setClientLogos(logosData.data || []);
       if (journalsData.success) setJournals(journalsData.data || []);
       if (insightsData.success) setInsights(insightsData.data || []);
+      if (articlesData.success) setArticles(articlesData.data || []);
       if (aboutData.success) setAboutContent(aboutData.data || []);
       if (whyChooseData.success) setWhyChooseContent(whyChooseData.data || []);
       if (feesData.success) setConsultationFeesContent(feesData.data || []);
@@ -183,8 +285,8 @@ export default function App({ navigate, route }) {
   };
 
   const address = siteSettings?.contact_address || "Anamnagar, Kathmandu";
-  const email = siteSettings?.contact_email || "info@primelawnepal.com";
-  const phone = siteSettings?.contact_phone || "+977-01-4102849";
+  const email = siteSettings?.contact_email || "info@usnepallegalsolutions.com";
+  const phone = siteSettings?.contact_phone || "+1 (785) 506-3402";
   const siteName = siteSettings?.site_name || "US-NEPAL LEGAL SOLUTIONS";
   const tagline = siteSettings?.site_tagline || "LEGAL SOLUTIONS";
   const buildWhatsAppLink = () => {
@@ -279,7 +381,6 @@ export default function App({ navigate, route }) {
     if (!hasSlides) return;
     setHeroIndex((prev) => (prev + 1) % heroSlides.length);
   };
-  const heroProgressKey = `${heroIndex}_${sliderSeconds}`;
   const lawyersForHome =
     loading ? [] : lawyers && lawyers.length > 0 ? lawyers : DUMMY_LAWYERS;
   const practiceForHome =
@@ -288,6 +389,7 @@ export default function App({ navigate, route }) {
     loading ? [] : publications && publications.length > 0 ? publications : DUMMY_PUBLICATIONS;
   const insightsForHome =
     loading ? [] : insights && insights.length > 0 ? insights : DUMMY_INSIGHTS;
+  const articlesForHome = loading ? [] : articles || [];
   const aboutForHome = aboutContent && aboutContent.length > 0 ? aboutContent[0] : null;
   const whyChooseForHome = whyChooseContent && whyChooseContent.length > 0 ? whyChooseContent[0] : null;
   const consultationFeesForHome =
@@ -311,6 +413,15 @@ export default function App({ navigate, route }) {
     return s.length > max ? `${s.slice(0, max).trim()}…` : s;
   };
 
+  const formatAdminText = (value) => {
+    const s = String(value || "").trim();
+    if (!s) return "";
+    // If HTML is provided from CKEditor, keep it as-is.
+    if (s.includes("<") && s.includes(">")) return s;
+    // Otherwise preserve line breaks for plain textarea input.
+    return s.replace(/\n/g, "<br/>");
+  };
+
   const lawyersSlidesCount = Math.max(1, Math.ceil(lawyersForHome.length / Math.max(1, lawyersPerView)));
   const canSlideLawyers = lawyersSlidesCount > 1;
 
@@ -330,6 +441,34 @@ export default function App({ navigate, route }) {
     setLawyersSlide((prev) => (prev + 1) % lawyersSlidesCount);
   };
 
+  const logosForHome = clientLogos && clientLogos.length > 0 ? clientLogos : [];
+  const logosSlidesCount = Math.max(1, Math.ceil(logosForHome.length / Math.max(1, logosPerView)));
+  const canSlideLogos = logosSlidesCount > 1;
+
+  useEffect(() => {
+    setLogosSlide((prev) => Math.min(Math.max(0, prev), logosSlidesCount - 1));
+  }, [logosSlidesCount]);
+
+  useEffect(() => {
+    if (!canSlideLogos) return;
+    const interval = window.setInterval(() => {
+      setLogosSlide((prev) => (prev + 1) % logosSlidesCount);
+    }, 3500);
+    return () => window.clearInterval(interval);
+  }, [canSlideLogos, logosSlidesCount]);
+
+  const logosStartIndex = logosSlide * logosPerView;
+  const logosVisible = logosForHome.slice(logosStartIndex, logosStartIndex + logosPerView);
+
+  const goPrevLogos = () => {
+    if (!canSlideLogos) return;
+    setLogosSlide((prev) => (prev - 1 + logosSlidesCount) % logosSlidesCount);
+  };
+  const goNextLogos = () => {
+    if (!canSlideLogos) return;
+    setLogosSlide((prev) => (prev + 1) % logosSlidesCount);
+  };
+
   const submitConsultation = async (e) => {
     e.preventDefault();
     setConsultResult("");
@@ -338,9 +477,6 @@ export default function App({ navigate, route }) {
       name: consultForm.name.trim(),
       email: consultForm.email.trim(),
       phone: consultForm.phone.trim(),
-      date: consultForm.date || "",
-      hour: consultForm.hour || "",
-      minute: consultForm.minute || "",
       about: consultForm.about.trim(),
     };
 
@@ -366,9 +502,6 @@ export default function App({ navigate, route }) {
         name: "",
         email: "",
         phone: "",
-        date: "",
-        hour: "01",
-        minute: "00",
         about: "",
       }));
     } catch (err) {
@@ -619,27 +752,6 @@ export default function App({ navigate, route }) {
                     ›
                   </button>
 
-                  <div className="hero__nav" aria-label="Slides">
-                    <div className="hero__dotsRow">
-                      {heroSlides.map((s, idx) => (
-                        <button
-                          key={String(s?.id ?? idx)}
-                          type="button"
-                          onClick={() => setHeroIndex(idx)}
-                          aria-label={`Slide ${idx + 1}`}
-                          aria-current={idx === heroIndex ? "true" : "false"}
-                          className={`hero__dot ${idx === heroIndex ? "is-active" : ""}`}
-                        />
-                      ))}
-                    </div>
-                    <div className="hero__progress" aria-hidden="true">
-                      <div
-                        key={heroProgressKey}
-                        className="hero__progressFill"
-                        style={{ animationDuration: `${Math.max(2, sliderSeconds)}s` }}
-                      />
-                    </div>
-                  </div>
                 </>
               ) : null}
             </section>
@@ -979,14 +1091,18 @@ export default function App({ navigate, route }) {
             </p>
           )}
           <div className="logo-slider">
-            <button className="slider-arrow" aria-label="Previous logos">
-              ‹
-            </button>
-            <div className="logo-track">
+            {canSlideLogos ? (
+              <button className="slider-arrow" aria-label="Previous logos" onClick={goPrevLogos}>
+                ‹
+              </button>
+            ) : (
+              <span />
+            )}
+            <div className="logo-track" style={{ ["--logo-cols"]: String(Math.max(1, logosPerView)) }}>
               {loading ? (
                 <p style={{ textAlign: "center", color: "#5a6b5f" }}>Loading client logos...</p>
-              ) : clientLogos.length > 0 ? (
-                clientLogos.map((logo) => (
+              ) : logosForHome.length > 0 ? (
+                logosVisible.map((logo) => (
                   <div key={logo.id} className="logo-card">
                     <img src={logo.image_url} alt={logo.name} />
                   </div>
@@ -995,16 +1111,28 @@ export default function App({ navigate, route }) {
                 <p style={{ textAlign: "center", color: "#5a6b5f" }}>No client logos available</p>
               )}
             </div>
-            <button className="slider-arrow" aria-label="Next logos">
-              ›
-            </button>
+            {canSlideLogos ? (
+              <button className="slider-arrow" aria-label="Next logos" onClick={goNextLogos}>
+                ›
+              </button>
+            ) : (
+              <span />
+            )}
           </div>
-          <div className="slider-dots" aria-hidden="true">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
+          {canSlideLogos ? (
+            <div className="slider-dots" aria-label="Client logos slider">
+              {Array.from({ length: logosSlidesCount }).map((_, i) => (
+                <button
+                  key={String(i)}
+                  type="button"
+                  className={`slider-dot ${i === logosSlide ? "is-active" : ""}`}
+                  aria-label={`Go to logos slide ${i + 1}`}
+                  aria-current={i === logosSlide ? "true" : "false"}
+                  onClick={() => setLogosSlide(i)}
+                />
+              ))}
+            </div>
+          ) : null}
         </div>
       </section>
 
@@ -1063,28 +1191,56 @@ export default function App({ navigate, route }) {
             {consultationFeesForHome?.text ? (
               <div
                 className="consultation-fees__intro center"
-                dangerouslySetInnerHTML={{ __html: consultationFeesForHome.text }}
+                dangerouslySetInnerHTML={{ __html: formatAdminText(consultationFeesForHome.text) }}
               />
             ) : (
-              <>
-                <p className="consultation-fees__intro center">
-                  Consultation fees for the first legal query with the empanelled legal consultants of
-                  US‑Nepal Legal Solutions are outlined below.
-                </p>
-                <ul>
-                  <li>Property disputes — $150 for 30 minutes</li>
-                  <li>Family disputes — $100 for 30 minutes</li>
-                  <li>Business issues — $200 for 30 minutes</li>
-                  <li>Criminal law issues — $200 for 30 minutes</li>
-                  <li>Tax‑related issues — $200 for 30 minutes</li>
-                  <li>Other issues — $100 for 30 minutes</li>
-                </ul>
-                <p className="consultation-fees__note">
-                  Note: The consultation fee will be discussed with the service seeker on a personal basis,
-                  depending on the time required for consultation.
-                </p>
-              </>
+              <p className="consultation-fees__intro center">
+                Please add Consultation Fees in Admin → Consultation Fees.
+              </p>
             )}
+          </div>
+        </div>
+        <div className="container" id="articles">
+          <div className="articles-section">
+            <div className="articles-section__header">
+              <h2 className="center">ARTICLES</h2>
+              <p className="articles-section__subtitle center">
+                Latest legal insights and updates from US‑Nepal Legal Solutions.
+              </p>
+            </div>
+            <div className="grid three articles-grid">
+              {loading ? (
+                <p style={{ gridColumn: "1 / -1", textAlign: "center", color: "#5a6b5f" }}>
+                  Loading articles...
+                </p>
+              ) : articlesForHome.length > 0 ? (
+                articlesForHome.map((article) => (
+                  <article key={article.id} className="card card--image article-card">
+                    {article.image_url ? (
+                      <img src={article.image_url} alt={article.title || "Article"} loading="lazy" />
+                    ) : null}
+                    <div className="card__body">
+                      <h3>{article.title || "Untitled Article"}</h3>
+                      {article.description ? (
+                        <p className="article-card__excerpt">{article.description}</p>
+                      ) : article.text ? (
+                        <p className="article-card__excerpt">{clampText(article.text, 140)}</p>
+                      ) : null}
+                    </div>
+                  </article>
+                ))
+              ) : (
+                <div style={{ gridColumn: "1 / -1", textAlign: "center", color: "#5a6b5f" }}>
+                  <p>No articles available</p>
+                  <a
+                    href="/?login=true"
+                    style={{ display: "inline-block", marginTop: 10, color: "#1f5e2e", fontWeight: 700 }}
+                  >
+                    Admin login to add Articles →
+                  </a>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </section>
@@ -1136,46 +1292,6 @@ export default function App({ navigate, route }) {
                       onChange={(e) => setConsultForm((p) => ({ ...p, phone: e.target.value }))}
                       className="w-full rounded-md border border-white/15 bg-white px-3 py-2 text-sm text-neutral-900 outline-none focus:ring-4 focus:ring-white/20"
                     />
-                  </div>
-                </div>
-
-                <div className="grid gap-4 sm:grid-cols-3">
-                  <div className="space-y-2 sm:col-span-1">
-                    <label className="text-xs font-semibold">Date</label>
-                    <input
-                      type="date"
-                      value={consultForm.date}
-                      onChange={(e) => setConsultForm((p) => ({ ...p, date: e.target.value }))}
-                      className="w-full rounded-md border border-white/15 bg-white px-3 py-2 text-sm text-neutral-900 outline-none focus:ring-4 focus:ring-white/20"
-                    />
-                  </div>
-                  <div className="space-y-2 sm:col-span-1">
-                    <label className="text-xs font-semibold">Hours</label>
-                    <select
-                      value={consultForm.hour}
-                      onChange={(e) => setConsultForm((p) => ({ ...p, hour: e.target.value }))}
-                      className="w-full rounded-md border border-white/15 bg-white px-3 py-2 text-sm text-neutral-900 outline-none focus:ring-4 focus:ring-white/20"
-                    >
-                      {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0")).map((v) => (
-                        <option key={v} value={v}>
-                          {v}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="space-y-2 sm:col-span-1">
-                    <label className="text-xs font-semibold">Minutes</label>
-                    <select
-                      value={consultForm.minute}
-                      onChange={(e) => setConsultForm((p) => ({ ...p, minute: e.target.value }))}
-                      className="w-full rounded-md border border-white/15 bg-white px-3 py-2 text-sm text-neutral-900 outline-none focus:ring-4 focus:ring-white/20"
-                    >
-                      {["00", "15", "30", "45"].map((v) => (
-                        <option key={v} value={v}>
-                          {v}
-                        </option>
-                      ))}
-                    </select>
                   </div>
                 </div>
 
@@ -1307,7 +1423,7 @@ export default function App({ navigate, route }) {
           </div>
 
           {/* Right: Insights */}
-          <div id="articles" className="px-6 py-10 sm:px-10 lg:px-10 lg:py-12">
+          <div id="insights" className="px-6 py-10 sm:px-10 lg:px-10 lg:py-12">
             <div className="mx-auto w-full max-w-[560px] text-center">
               <h3 className="text-lg font-bold text-neutral-900">
                 Practical Insights &amp; Articles on the Legal Regime of Nepal
@@ -1377,12 +1493,12 @@ export default function App({ navigate, route }) {
           <div>
             <h4>Quick Links</h4>
             <ul>
-              <li>Home</li>
-              <li>About Us</li>
-              <li>Areas of Practice</li>
-              <li>Lawyers</li>
-              <li>Careers</li>
-              <li>Contact</li>
+              <li><a href="/lawyers" onClick={(e) => { e.preventDefault(); go("/lawyers"); }}>Lawyers</a></li>
+              <li><a href="/about" onClick={(e) => { e.preventDefault(); go("/about"); }}>About Us</a></li>
+              <li><a href="/#contact" onClick={(e) => { e.preventDefault(); goToHomeSection("contact"); }}>Contact Us</a></li>
+              <li><a href="/#practice" onClick={(e) => { e.preventDefault(); goToHomeSection("practice"); }}>Practice Areas</a></li>
+              <li><a href="/#articles" onClick={(e) => { e.preventDefault(); goToHomeSection("articles"); }}>Articles</a></li>
+              <li><a href="/admin" onClick={(e) => { e.preventDefault(); go("/admin"); }}>Admin</a></li>
             </ul>
           </div>
           <div>

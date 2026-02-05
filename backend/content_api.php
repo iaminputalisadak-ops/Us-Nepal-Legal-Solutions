@@ -46,7 +46,7 @@ function verifyAdminSession() {
 $allowedTypes = [
     'practice_areas', 'publications', 'client_logos', 
     'journals', 'insights', 'hero_content', 'feature_strips', 'hero_banners',
-    'about_content', 'why_choose_us', 'consultation_fees'
+    'about_content', 'why_choose_us', 'consultation_fees', 'articles'
 ];
 
 function ensureHeroTables($conn) {
@@ -181,6 +181,30 @@ function ensureConsultationFeesTable($conn) {
     }
 }
 
+function ensureArticlesTable($conn) {
+    // Create articles table if missing
+    try {
+        $conn->query("
+            CREATE TABLE IF NOT EXISTS articles (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                title VARCHAR(300) NOT NULL,
+                slug VARCHAR(300),
+                description TEXT,
+                text TEXT,
+                image_url VARCHAR(500),
+                display_order INT DEFAULT 0,
+                is_active TINYINT(1) DEFAULT 1,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                INDEX idx_active (is_active),
+                INDEX idx_order (display_order)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        ");
+    } catch (Exception $e) {
+        // ignore - if DB user lacks ALTER/CREATE permissions, requests may still fail and return the error
+    }
+}
+
 $type = $_GET['type'] ?? '';
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -207,6 +231,9 @@ if ($method === 'GET') {
         if ($type === 'consultation_fees') {
             ensureConsultationFeesTable($conn);
         }
+        if ($type === 'articles') {
+            ensureArticlesTable($conn);
+        }
         
         // Hero content has different structure
         if ($type === 'hero_content') {
@@ -215,6 +242,12 @@ if ($method === 'GET') {
                 WHERE is_active = 1 
                 ORDER BY id DESC
                 LIMIT 1
+            ");
+        } elseif ($type === 'consultation_fees' || $type === 'why_choose_us') {
+            $stmt = $conn->prepare("
+                SELECT * FROM {$table} 
+                WHERE is_active = 1 
+                ORDER BY id DESC
             ");
         } else {
             $stmt = $conn->prepare("
@@ -261,6 +294,9 @@ elseif ($method === 'POST') {
         }
         if ($type === 'consultation_fees') {
             ensureConsultationFeesTable($conn);
+        }
+        if ($type === 'articles') {
+            ensureArticlesTable($conn);
         }
         $fields = [];
         $values = [];
@@ -338,6 +374,9 @@ elseif ($method === 'PUT') {
         if ($type === 'consultation_fees') {
             ensureConsultationFeesTable($conn);
         }
+        if ($type === 'articles') {
+            ensureArticlesTable($conn);
+        }
         $fields = [];
         $values = [];
         
@@ -397,6 +436,9 @@ elseif ($method === 'DELETE') {
         }
         if ($type === 'consultation_fees') {
             ensureConsultationFeesTable($conn);
+        }
+        if ($type === 'articles') {
+            ensureArticlesTable($conn);
         }
         $stmt = $conn->prepare("DELETE FROM {$table} WHERE id = ?");
         $stmt->bind_param("i", $id);

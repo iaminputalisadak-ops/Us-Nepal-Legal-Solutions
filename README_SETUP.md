@@ -1,5 +1,7 @@
 # US-NEPAL LEGAL SOLUTIONS - Setup Guide
 
+> Database: `us_nepal_legal_db`
+
 ## Database Setup (MySQL)
 
 1. **Start XAMPP** and make sure MySQL is running
@@ -35,7 +37,7 @@
    define('DB_HOST', 'localhost');
    define('DB_USER', 'root');
    define('DB_PASS', ''); // Your MySQL password if set
-   define('DB_NAME', 'us_nepal_legal_db');
+   define('DB_NAME', 'usnepallegalsolu_db');
    ```
 
 3. **Test the API:**
@@ -83,7 +85,7 @@ New folder/
 ### Database Connection Error
 - Make sure MySQL is running in XAMPP
 - Check database credentials in `config.php`
-- Verify database `us_nepal_legal_db` exists
+- Verify database `usnepallegalsolu_db` exists
 
 ### CORS Error
 - Make sure PHP backend is in `C:\xampp\htdocs\backend\`

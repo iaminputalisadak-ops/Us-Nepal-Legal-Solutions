@@ -1,47 +1,22 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import net from "node:net";
 
-function isPortOpen(port, host = "127.0.0.1", timeoutMs = 250) {
-  return new Promise((resolve) => {
-    const socket = new net.Socket();
-    const onDone = (result) => {
-      try {
-        socket.destroy();
-      } catch {
-        // ignore
-      }
-      resolve(result);
-    };
-
-    socket.setTimeout(timeoutMs);
-    socket.once("error", () => onDone(false));
-    socket.once("timeout", () => onDone(false));
-    socket.connect(port, host, () => onDone(true));
-  });
-}
-
-async function detectBackendTarget() {
-  // You can override with BACKEND_PORT=8080 npm run dev
-  const fromEnv = Number.parseInt(process.env.BACKEND_PORT || "", 10);
-  if (Number.isFinite(fromEnv)) return `http://localhost:${fromEnv}`;
-
-  // Most common: Apache is on 8080 (if port 80 is taken). Otherwise 80.
-  if (await isPortOpen(8080)) return "http://localhost:8080";
-  if (await isPortOpen(80)) return "http://localhost";
-
-  // Fallback to 8080 (original project assumption)
-  return "http://localhost:8080";
+// Apache on port 8080, MySQL on 3308 - backend at http://localhost:8080/backend/
+function getBackendTarget() {
+  const port = Number.parseInt(process.env.BACKEND_PORT || "8080", 10);
+  return `http://localhost:${port}`;
 }
 
 // Proxy the PHP backend through Vite so the browser stays same-origin (no CORS issues).
 // Use /api to avoid clashing with the local ./backend folder (otherwise Vite may serve PHP as static files).
-// Frontend will call /api/... and Vite will forward to <target>/us-nepal-legal-backend/...
-export default defineConfig(async () => {
-  const target = await detectBackendTarget();
-  console.log(`[vite] Using PHP backend target: ${target}/us-nepal-legal-backend`);
+// Frontend calls /api/... → Vite forwards to <target>/backend/...
+// Your backend folder in XAMPP should be at: C:\xampp\htdocs\backend\
+export default defineConfig(() => {
+  const target = getBackendTarget();
+  console.log(`[vite] Backend: ${target}/backend (Apache port 8080)`);
 
   return {
+    appType: "spa",
     plugins: [react()],
     server: {
       port: 5175,
@@ -53,13 +28,13 @@ export default defineConfig(async () => {
           target,
           changeOrigin: true,
           secure: false,
-          rewrite: (path) => path.replace(/^\/api\/uploads/, "/us-nepal-legal-uploads"),
+          rewrite: (path) => path.replace(/^\/api\/uploads/, "/backend/uploads"),
         },
         "/api": {
           target,
           changeOrigin: true,
           secure: false,
-          rewrite: (path) => path.replace(/^\/api/, "/us-nepal-legal-backend"),
+          rewrite: (path) => path.replace(/^\/api/, "/backend"),
         },
       },
     },

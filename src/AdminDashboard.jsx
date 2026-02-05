@@ -106,6 +106,12 @@ export default function AdminDashboard({ admin, onLogout, token }) {
             Insights
           </button>
           <button
+            className={`tab-button ${activeTab === "articles" ? "active" : ""}`}
+            onClick={() => setActiveTab("articles")}
+          >
+            Articles
+          </button>
+          <button
             className={`tab-button ${activeTab === "hero_content" ? "active" : ""}`}
             onClick={() => setActiveTab("hero_content")}
           >
@@ -198,6 +204,7 @@ export default function AdminDashboard({ admin, onLogout, token }) {
         {activeTab === "client_logos" && <ContentManager contentType="client_logos" token={token} />}
         {activeTab === "journals" && <ContentManager contentType="journals" token={token} />}
         {activeTab === "insights" && <ContentManager contentType="insights" token={token} />}
+        {activeTab === "articles" && <ContentManager contentType="articles" token={token} />}
         {activeTab === "hero_content" && <HeroSectionManager token={token} />}
         {activeTab === "feature_strips" && <ContentManager contentType="feature_strips" token={token} />}
         {activeTab === "about_content" && <ContentManager contentType="about_content" token={token} />}

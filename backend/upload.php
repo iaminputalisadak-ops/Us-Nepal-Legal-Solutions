@@ -70,13 +70,8 @@ if (!isset($allowed[$mime])) {
 }
 $ext = $allowed[$mime];
 
-// Store uploads in a persistent folder so files don't disappear when backend code is updated.
-// Prefer: <xampp>/htdocs/us-nepal-legal-uploads (served by Apache)
-// Fallback: backend/uploads (same folder as this script)
-$docRoot = rtrim((string)($_SERVER['DOCUMENT_ROOT'] ?? ''), "/\\");
-$uploadsDir = $docRoot
-    ? ($docRoot . DIRECTORY_SEPARATOR . 'us-nepal-legal-uploads')
-    : (__DIR__ . DIRECTORY_SEPARATOR . 'uploads');
+// Store uploads in backend/uploads so /api/uploads/xxx proxies correctly to /backend/uploads/xxx
+$uploadsDir = __DIR__ . DIRECTORY_SEPARATOR . 'uploads';
 if (!is_dir($uploadsDir)) {
     mkdir($uploadsDir, 0755, true);
 }

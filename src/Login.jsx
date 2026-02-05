@@ -49,15 +49,33 @@ export default function Login({ onLogin, onCancel }) {
         return;
       }
 
-      const data = await response.json();
+      let data;
+      const text = await response.text();
+      try {
+        data = text ? JSON.parse(text) : null;
+      } catch (parseErr) {
+        const preview = (text || "").slice(0, 200).replace(/\n/g, " ");
+        setError(
+          `Backend returned invalid JSON (not a proper API response).\n\n` +
+          `This usually means:\n` +
+          `1) Backend folder is in the wrong place. Copy to: C:\\xampp\\htdocs\\backend\\\n` +
+          `2) Apache/PHP is returning an HTML error page instead of JSON.\n` +
+          `3) PHP has warnings (e.g. duplicate mysqli) - check php.ini.\n\n` +
+          `Test in browser: http://localhost:8080/backend/login.php\n` +
+          `(or http://localhost/backend/login.php if Apache is on port 80)\n\n` +
+          `Response preview: ${preview || "(empty)"}`
+        );
+        setLoading(false);
+        return;
+      }
 
-      if (data.success) {
+      if (data && data.success) {
         // Store token in localStorage
         localStorage.setItem("adminToken", data.data.token);
         localStorage.setItem("adminData", JSON.stringify(data.data.admin));
         onLogin(data.data);
       } else {
-        setError(data.message || "Login failed. Please try again.");
+        setError((data && data.message) || "Login failed. Please try again.");
       }
     } catch (err) {
       if (err.message.includes("Failed to fetch") || err.message.includes("NetworkError")) {

@@ -13,6 +13,7 @@ if (!isset($input['token'])) {
 
 $token = $input['token'];
 $conn = getDBConnection();
+ensureAdminTables($conn);
 
 // Verify session token
 $stmt = $conn->prepare("

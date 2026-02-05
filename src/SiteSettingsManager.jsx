@@ -5,6 +5,11 @@ import ImageField from "./ImageField.jsx";
 const DEFAULTS = {
   site_name: "US-NEPAL LEGAL SOLUTIONS",
   site_tagline: "LEGAL SOLUTIONS",
+    seo_title: "",
+    seo_description: "",
+    seo_keywords: "",
+    seo_canonical: "",
+    seo_og_image: "",
   favicon_url: "/favicon.svg",
   header_logo_url: "",
   footer_logo_url: "",
@@ -17,7 +22,7 @@ const DEFAULTS = {
   hero_background_fit: "cover", // cover | contain
   hero_background_position: "center", // e.g. "center", "top", "50% 30%"
   contact_email: "info@usnepallegalsolutions.com",
-  contact_phone: "+977-01-4685468",
+  contact_phone: "+1 (785) 506-3402",
   contact_address: "Annamnagar, Nepal",
   whatsapp_number: "",
   whatsapp_link: "",
@@ -318,6 +323,64 @@ export default function SiteSettingsManager({ token: tokenProp }) {
                 ))}
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-neutral-200 bg-white p-4 sm:p-6">
+        <h3 className="text-lg font-bold text-neutral-900">SEO</h3>
+        <p className="mt-1 text-sm text-neutral-600">
+          These settings control search result previews and social sharing cards.
+        </p>
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div className="space-y-2 md:col-span-2">
+            <label className="block text-sm font-semibold text-neutral-800">SEO Title</label>
+            <input
+              type="text"
+              value={merged.seo_title || ""}
+              onChange={(e) => setField("seo_title", e.target.value)}
+              placeholder="US-NEPAL LEGAL SOLUTIONS"
+              className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-brand-700 focus:ring-4 focus:ring-brand-100"
+            />
+          </div>
+          <div className="space-y-2 md:col-span-2">
+            <label className="block text-sm font-semibold text-neutral-800">SEO Description</label>
+            <textarea
+              value={merged.seo_description || ""}
+              onChange={(e) => setField("seo_description", e.target.value)}
+              rows={3}
+              placeholder="Write a short description for Google and social previews."
+              className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-brand-700 focus:ring-4 focus:ring-brand-100"
+            />
+          </div>
+          <div className="space-y-2 md:col-span-2">
+            <label className="block text-sm font-semibold text-neutral-800">SEO Keywords (comma-separated)</label>
+            <input
+              type="text"
+              value={merged.seo_keywords || ""}
+              onChange={(e) => setField("seo_keywords", e.target.value)}
+              placeholder="law firm Nepal, corporate law, litigation, legal services"
+              className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-brand-700 focus:ring-4 focus:ring-brand-100"
+            />
+          </div>
+          <div className="space-y-2 md:col-span-2">
+            <label className="block text-sm font-semibold text-neutral-800">Canonical URL (optional)</label>
+            <input
+              type="text"
+              value={merged.seo_canonical || ""}
+              onChange={(e) => setField("seo_canonical", e.target.value)}
+              placeholder="https://usnepallegalsolutions.com/"
+              className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-brand-700 focus:ring-4 focus:ring-brand-100"
+            />
+          </div>
+          <div className="md:col-span-2">
+            <ImageField
+              label="OG / Social Share Image"
+              value={merged.seo_og_image || ""}
+              onChange={(url) => setField("seo_og_image", url)}
+              helpText="Recommended 1200×630px. Used for Facebook/LinkedIn/Twitter previews."
+              token={token}
+            />
           </div>
         </div>
       </div>

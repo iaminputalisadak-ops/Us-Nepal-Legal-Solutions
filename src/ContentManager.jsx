@@ -1,7 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { API_URL } from "./config.js";
 import ImageField from "./ImageField.jsx";
 import BackgroundPositionPicker from "./BackgroundPositionPicker.jsx";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 const CONTENT_TYPES = {
   practice_areas: { name: "Practice Areas", fields: ["title", "text", "icon_url"] },
@@ -46,6 +48,7 @@ const CONTENT_TYPES = {
   why_choose_us: { name: "Why Clients Choose Us", fields: ["title", "text"], single: true, supportsOrder: false },
   consultation_fees: { name: "Consultation Fees", fields: ["title", "text"], single: true, supportsOrder: false, singleLabel: "Set Fees" },
   feature_strips: { name: "Feature Strips", fields: ["title"] },
+  articles: { name: "Articles", fields: ["title", "slug", "description", "text", "image_url"] },
 };
 
 export default function ContentManager({ contentType, token: tokenProp }) {
@@ -54,7 +57,6 @@ export default function ContentManager({ contentType, token: tokenProp }) {
   const [showForm, setShowForm] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [formData, setFormData] = useState({});
-  const [editorReady, setEditorReady] = useState(false);
 
   const config = CONTENT_TYPES[contentType];
   if (!config) return <div className="text-sm text-rose-700">Invalid content type</div>;
@@ -66,70 +68,16 @@ export default function ContentManager({ contentType, token: tokenProp }) {
     fetchItems();
     initializeForm();
   }, [contentType]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (window.CKEDITOR) {
-      setEditorReady(true);
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.src = "https://cdn.ckeditor.com/4.22.1/full/ckeditor.js";
-    script.async = true;
-    script.onload = () => setEditorReady(true);
-    script.onerror = () => setEditorReady(false);
-    document.body.appendChild(script);
-
-    return () => {
-      script.remove();
-    };
-  }, []);
-
-  const RichTextEditor = ({ id, value, onChange, rows = 4, required }) => {
-    const textareaRef = useRef(null);
-
-    useEffect(() => {
-      if (!editorReady || !window.CKEDITOR || !textareaRef.current) return;
-
-      if (window.CKEDITOR.instances[id]) {
-        window.CKEDITOR.instances[id].destroy(true);
-      }
-
-      const editor = window.CKEDITOR.replace(id, {
-        height: rows === 3 ? 120 : 160,
-        removePlugins: "image,uploadimage,uploadwidget,cloudservices",
-      });
-
-      editor.setData(value || "");
-      editor.on("change", () => {
-        const data = editor.getData();
-        onChange(data);
-      });
-
-      return () => {
-        if (editor && editor.destroy) editor.destroy(true);
-      };
-    }, [editorReady, id]);
-
-    useEffect(() => {
-      if (!editorReady || !window.CKEDITOR || !window.CKEDITOR.instances[id]) return;
-      const editor = window.CKEDITOR.instances[id];
-      if (editor.getData() !== (value || "")) {
-        editor.setData(value || "");
-      }
-    }, [value, editorReady, id]);
-
-    return (
-      <textarea
-        ref={textareaRef}
-        id={id}
-        defaultValue={value || ""}
-        required={required}
-        rows={rows}
-        className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-brand-700 focus:ring-4 focus:ring-brand-100"
-      />
-    );
+  const ckeditorConfig = {
+    toolbar: ["heading", "|", "bold", "italic", "link", "bulletedList", "numberedList", "|", "undo", "redo"],
+    removePlugins: [
+      "CKFinderUploadAdapter",
+      "CKFinder",
+      "EasyImage",
+      "ImageUpload",
+      "MediaEmbed",
+      "CloudServices",
+    ],
   };
 
   const initializeForm = () => {
@@ -141,6 +89,21 @@ export default function ContentManager({ contentType, token: tokenProp }) {
     if (config.supportsOrder !== false) initialData.display_order = 0;
     initialData.is_active = 1;
     if (contentType === "hero_content") initialData.slider_interval_seconds = 6;
+    if (contentType === "consultation_fees") {
+      initialData.title = "CONSULTATION FEES";
+      initialData.text = [
+        "Consultation fees for the first legal query with the empanelled legal consultants of US‑Nepal Legal Solutions are outlined below.",
+        "",
+        "Property disputes — $150 for 30 minutes",
+        "Family disputes — $100 for 30 minutes",
+        "Business issues — $200 for 30 minutes",
+        "Criminal law issues — $200 for 30 minutes",
+        "Tax‑related issues — $200 for 30 minutes",
+        "Other issues — $100 for 30 minutes",
+        "",
+        "Note: The consultation fee will be discussed with the service seeker on a personal basis, depending on the time required for consultation.",
+      ].join("\n");
+    }
     setFormData(initialData);
   };
 
@@ -272,8 +235,11 @@ export default function ContentManager({ contentType, token: tokenProp }) {
   };
 
   const renderField = (field) => {
-    const isTextarea = field === "text" || field === "description" || field === "main_title";
+    const isPlainTextarea = field === "main_title";
+    const isRichText = field === "text" || field === "description";
     const label = field.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+    const displayLabel =
+      contentType === "consultation_fees" && field === "text" ? "Description" : label;
     const isImageField = field === "image_url" || field === "background_image_url" || field === "icon_url";
 
     if (field === "slider_interval_seconds") {
@@ -408,34 +374,40 @@ export default function ContentManager({ contentType, token: tokenProp }) {
       );
     }
 
-    if (isTextarea) {
+    if (isRichText) {
       return (
         <div key={field} className="space-y-2">
           <label className="block text-sm font-semibold text-neutral-800">
-            {label} {field === "title" && "*"}
+            {displayLabel} {field === "title" && "*"}
           </label>
           <div className="rounded-lg border border-neutral-300 bg-white p-2 focus-within:border-brand-700 focus-within:ring-4 focus-within:ring-brand-100">
-            {editorReady ? (
-              <RichTextEditor
-                id={`editor_${contentType}_${field}`}
-                value={formData[field] || ""}
-                onChange={(val) => setFormData((prev) => ({ ...prev, [field]: val }))}
-                rows={field === "main_title" ? 3 : 4}
-                required={field === "title"}
-              />
-            ) : (
-              <div className="space-y-2">
-                <textarea
-                  name={field}
-                  value={formData[field] || ""}
-                  onChange={handleInputChange}
-                  rows={field === "main_title" ? 3 : 4}
-                  required={field === "title"}
-                  className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-brand-700 focus:ring-4 focus:ring-brand-100"
-                />
-                <div className="text-xs text-neutral-500">Loading editor…</div>
-              </div>
-            )}
+            <CKEditor
+              editor={ClassicEditor}
+              config={ckeditorConfig}
+              data={formData[field] || ""}
+              onChange={(_, editor) => {
+                const data = editor.getData();
+                setFormData((prev) => ({ ...prev, [field]: data }));
+              }}
+            />
+          </div>
+        </div>
+      );
+    }
+
+    if (isPlainTextarea) {
+      return (
+        <div key={field} className="space-y-2">
+          <label className="block text-sm font-semibold text-neutral-800">{displayLabel}</label>
+          <textarea
+            name={field}
+            value={formData[field] || ""}
+            onChange={handleInputChange}
+            rows={3}
+            className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm outline-none focus:border-brand-700 focus:ring-4 focus:ring-brand-100"
+          />
+          <div className="text-xs text-neutral-500">
+            Tip: use line breaks to split the title into multiple lines.
           </div>
         </div>
       );
@@ -550,21 +522,28 @@ export default function ContentManager({ contentType, token: tokenProp }) {
               {items?.[0] ? "Edit" : "Set Hero"}
             </button>
           </div>
-        ) : items?.[0] || canCreate ? (
+        ) : isSingle ? (
           <button
             type="button"
             onClick={() => {
-              if (isSingle) {
-                if (items?.[0]) handleEdit(items[0]);
-                else setShowForm(true);
-                return;
-              }
-              if (!canCreate && !items?.[0]) return;
+              if (items?.[0]) handleEdit(items[0]);
+              else setShowForm(true);
+            }}
+            className="inline-flex items-center justify-center rounded-lg bg-brand-700 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-800"
+          >
+            {items?.[0] ? "Edit" : singleCtaLabel}
+          </button>
+        ) : canCreate ? (
+          <button
+            type="button"
+            onClick={() => {
+              setEditingItem(null);
+              initializeForm();
               setShowForm(true);
             }}
             className="inline-flex items-center justify-center rounded-lg bg-brand-700 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-800"
           >
-            {items?.[0] || !canCreate ? "Edit" : isSingle ? singleCtaLabel : "+ Add New"}
+            + Add New
           </button>
         ) : null}
       </header>
