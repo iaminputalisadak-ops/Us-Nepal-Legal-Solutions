@@ -116,22 +116,32 @@ Then run `npm run build` again.
 
 ---
 
-## Step 7: .htaccess for SPA Routing
+## Step 7: .htaccess Files (REQUIRED)
 
-Create or edit `public_html/.htaccess`:
+**Root .htaccess** – Create `public_html/.htaccess`:
 
 ```apache
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
-  RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.html [L]
+  RewriteCond %{REQUEST_URI} !^/api/
+  RewriteRule ^ index.html [L]
 </IfModule>
 ```
 
-This sends all non-file requests to `index.html` for React routing.
+**Backend .htaccess** – Create `public_html/api/.htaccess`:
+
+```apache
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_METHOD} OPTIONS
+    RewriteRule ^(.*)$ $1 [R=200,L]
+</IfModule>
+```
+
+> **Note:** The `public/` folder now includes `.htaccess` – it will be in `dist/` after build. Upload it to `public_html/` as `.htaccess`.
 
 ---
 

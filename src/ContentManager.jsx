@@ -44,7 +44,7 @@ const CONTENT_TYPES = {
       "background_position",
     ],
   },
-  about_content: { name: "About Us", fields: ["title", "text"], disableAdd: true },
+  about_content: { name: "About Us", fields: ["title", "text", "image_url"], disableAdd: true },
   why_choose_us: { name: "Why Clients Choose Us", fields: ["title", "text"], single: true, supportsOrder: false },
   consultation_fees: { name: "Consultation Fees", fields: ["title", "text"], single: true, supportsOrder: false, singleLabel: "Set Fees" },
   feature_strips: { name: "Feature Strips", fields: ["title"] },

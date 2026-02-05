@@ -109,6 +109,8 @@ if ($method === 'POST' || $method === 'PUT') {
         
         foreach ($settings as $key => $value) {
             if (!is_string($key) || trim($key) === '') continue;
+            // Only allow safe key names (alphanumeric + underscore)
+            if (!preg_match('/^[a-zA-Z0-9_]+$/', trim($key))) continue;
             if (is_array($value) || is_object($value)) {
                 // Store structured values as JSON
                 $value = json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -151,7 +153,7 @@ if ($method === 'DELETE') {
         $stmt = $conn->prepare("DELETE FROM site_settings WHERE setting_key = ?");
         foreach ($keys as $k) {
             $k = trim((string)$k);
-            if ($k === '') continue;
+            if ($k === '' || !preg_match('/^[a-zA-Z0-9_]+$/', $k)) continue;
             $stmt->bind_param("s", $k);
             $stmt->execute();
         }

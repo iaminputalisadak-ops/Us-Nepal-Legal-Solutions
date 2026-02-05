@@ -1,4 +1,18 @@
 <?php
+// getallheaders() fallback for PHP-CGI (e.g. some cPanel setups)
+if (!function_exists('getallheaders')) {
+    function getallheaders() {
+        $headers = [];
+        foreach ($_SERVER as $k => $v) {
+            if (strpos($k, 'HTTP_') === 0) {
+                $key = str_replace('_', '-', substr($k, 5));
+                $headers[$key] = $v;
+            }
+        }
+        return $headers;
+    }
+}
+
 // Database configuration
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
@@ -10,9 +24,17 @@ define('DB_PORT', 3308);
 // Session configuration
 define('SESSION_LIFETIME', 3600 * 24); // 24 hours
 
-// CORS headers for React app
+// CORS headers for React app (dev + production)
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-if (in_array($origin, ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176', 'http://localhost:5177', 'http://localhost:5178'])) {
+$host = $_SERVER['HTTP_HOST'] ?? '';
+$allowed = [
+    'http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175',
+    'http://localhost:5176', 'http://localhost:5177', 'http://localhost:5178',
+    'https://usnepallegalsolutions.com', 'https://www.usnepallegalsolutions.com',
+    'http://usnepallegalsolutions.com', 'http://www.usnepallegalsolutions.com',
+];
+// Allow if in list, or if origin matches this host (same-origin on cPanel)
+if ($origin && (in_array($origin, $allowed) || preg_match('#^https?://(www\.)?' . preg_quote($host, '#') . '$#', $origin))) {
     header("Access-Control-Allow-Origin: $origin");
 }
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');

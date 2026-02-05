@@ -49,6 +49,22 @@ $allowedTypes = [
     'about_content', 'why_choose_us', 'consultation_fees', 'articles'
 ];
 
+// Allowed columns per table (security: prevent SQL injection via field names)
+$allowedColumns = [
+    'practice_areas' => ['title', 'text', 'icon_url', 'display_order', 'is_active'],
+    'publications' => ['title', 'text', 'image_url', 'display_order', 'is_active'],
+    'client_logos' => ['name', 'image_url', 'website_url', 'display_order', 'is_active'],
+    'journals' => ['title', 'image_url', 'description', 'display_order', 'is_active'],
+    'insights' => ['title', 'text', 'image_url', 'display_order', 'is_active'],
+    'hero_content' => ['eyebrow_text', 'main_title', 'description', 'button_text', 'button_link', 'slider_interval_seconds', 'background_image_url', 'background_fit', 'background_position', 'is_active'],
+    'hero_banners' => ['eyebrow_text', 'main_title', 'description', 'button_text', 'button_link', 'display_order', 'background_image_url', 'background_fit', 'background_position', 'is_active'],
+    'about_content' => ['title', 'text', 'image_url', 'display_order', 'is_active'],
+    'why_choose_us' => ['title', 'text', 'is_active'],
+    'consultation_fees' => ['title', 'text', 'is_active'],
+    'feature_strips' => ['title', 'display_order', 'is_active'],
+    'articles' => ['title', 'slug', 'description', 'text', 'image_url', 'display_order', 'is_active'],
+];
+
 function ensureHeroTables($conn) {
     // Create missing hero tables for older databases
     // NOTE: Uses IF NOT EXISTS so it's safe to call repeatedly.
@@ -314,9 +330,10 @@ elseif ($method === 'POST') {
             }
         }
         
-        // Build dynamic query based on table type
+        // Build dynamic query - whitelist columns only (security)
+        $cols = $allowedColumns[$table] ?? [];
         foreach ($input as $key => $value) {
-            if ($key !== 'token' && $key !== 'id') {
+            if ($key !== 'token' && $key !== 'id' && in_array($key, $cols)) {
                 $fields[] = $key;
                 $values[] = $value;
                 $placeholders[] = '?';
@@ -379,9 +396,10 @@ elseif ($method === 'PUT') {
         }
         $fields = [];
         $values = [];
+        $cols = $allowedColumns[$table] ?? [];
         
         foreach ($input as $key => $value) {
-            if ($key !== 'token' && $key !== 'id') {
+            if ($key !== 'token' && $key !== 'id' && in_array($key, $cols)) {
                 $fields[] = "{$key} = ?";
                 $values[] = $value;
             }
