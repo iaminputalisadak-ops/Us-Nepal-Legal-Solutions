@@ -1,0 +1,14 @@
+<?php
+/**
+ * Copy to config.local.php and edit DB_NAME to match YOUR database.
+ *
+ * LOCAL (XAMPP): Use your existing database name. If you created "usneppal"
+ * or "mydb" or something else, put that in DB_NAME.
+ *
+ * CPANEL: Use your cPanel MySQL user, password, database name, port 3306.
+ */
+define('DB_HOST', 'localhost');
+define('DB_USER', 'root');
+define('DB_PASS', '');
+define('DB_NAME', 'us_nepal_legal_db');  // Change to your database name
+define('DB_PORT', 3308);

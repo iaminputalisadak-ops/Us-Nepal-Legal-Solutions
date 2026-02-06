@@ -4,7 +4,7 @@
  * Run once: http://localhost:8080/backend/setup_full.php
  *
  * This will:
- * 1. Drop the existing usneppal (if any)
+ * 1. Drop the existing us_nepal_legal_db (if any)
  * 2. Create a fresh database
  * 3. Create all 17 tables
  * 4. Insert all default data (admin, lawyers, practice areas, etc.)
@@ -15,7 +15,7 @@ header('Access-Control-Allow-Origin: *');
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
-define('DB_NAME', 'usneppal');
+define('DB_NAME', 'us_nepal_legal_db');
 define('DB_PORT', 3308);
 
 try {

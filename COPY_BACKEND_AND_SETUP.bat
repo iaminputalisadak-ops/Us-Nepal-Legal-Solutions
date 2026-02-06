@@ -12,7 +12,7 @@ echo.
 echo Now open in your browser:
 echo   http://localhost:8080/backend/setup_full.php
 echo.
-echo This will create the "usneppal" database with all tables and data.
+echo This will create the "us_nepal_legal_db" database with all tables and data.
 echo Then login at: http://localhost:5175/admin (admin / admin123)
 echo.
 pause

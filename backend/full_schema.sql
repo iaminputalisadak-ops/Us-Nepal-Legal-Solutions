@@ -1,9 +1,9 @@
 -- US-NEPAL LEGAL SOLUTIONS - Full Database (for setup_full.php)
-CREATE DATABASE IF NOT EXISTS usneppal CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE usneppal;
+CREATE DATABASE IF NOT EXISTS us_nepal_legal_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE us_nepal_legal_db;
 
 CREATE TABLE IF NOT EXISTS admins (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(50) NOT NULL UNIQUE, email VARCHAR(100) NOT NULL UNIQUE, password VARCHAR(255) NOT NULL, full_name VARCHAR(100) NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, last_login TIMESTAMP NULL, is_active TINYINT(1) DEFAULT 1) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-INSERT INTO admins (username, email, password, full_name) VALUES ('admin', 'admin@usnepallegal.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Administrator');
+INSERT INTO admins (username, email, password, full_name) VALUES ('admin', 'admin@usnepallegal.com', '$2y$10$eqF05ovfu/oqXjr.Rqqi6.jHoVC90PibiLvUV/P1BKJWlL5AodB2K', 'Administrator');
 
 CREATE TABLE IF NOT EXISTS admin_sessions (id INT AUTO_INCREMENT PRIMARY KEY, admin_id INT NOT NULL, session_token VARCHAR(255) NOT NULL UNIQUE, ip_address VARCHAR(45), user_agent TEXT, created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, expires_at DATETIME NOT NULL, FOREIGN KEY (admin_id) REFERENCES admins(id) ON DELETE CASCADE, INDEX idx_token (session_token), INDEX idx_admin (admin_id)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

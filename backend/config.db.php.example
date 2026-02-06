@@ -1,0 +1,10 @@
+<?php
+/**
+ * Database config - copy to config.db.php and add your credentials.
+ * CPANEL: Use port 3306. Get credentials from cPanel → MySQL Databases.
+ */
+define('DB_HOST', 'localhost');
+define('DB_USER', 'usnepallegalsolu_nepal');   // Your cPanel MySQL username
+define('DB_PASS', 'YOUR_PASSWORD');            // Your cPanel MySQL password
+define('DB_NAME', 'usnepallegalsolu_nepal');   // Your cPanel database name
+define('DB_PORT', 3306);                       // cPanel uses 3306

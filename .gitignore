@@ -4,16 +4,22 @@ node_modules/
 # Build output
 dist/
 
-# Environment files
+# Environment files (keep .env.production for cPanel build)
 .env
-.env.*
+.env.local
+.env.local.*
 
 # Local/credential notes (do not commit)
 ADMIN_CREDENTIALS.txt
 ADMIN_LOGIN_INFO.txt
+backend/config.local.php
+backend/config.cpanel.php
+backend/config.db.php
 
-# Uploads / generated content (if present)
-backend/uploads/
+# Uploads / generated content (ignore uploaded images, keep folder structure)
+backend/uploads/*
+!backend/uploads/.gitkeep
+!backend/uploads/.htaccess
 
 # Logs
 *.log
