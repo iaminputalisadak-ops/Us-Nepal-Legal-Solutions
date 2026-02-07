@@ -1,3 +1,9 @@
+# Fix MIME type for JavaScript (cPanel)
+<IfModule mod_mime.c>
+  AddType application/javascript .js .mjs
+  AddType text/javascript .js .mjs
+</IfModule>
+
 # SPA routing - /admin, /lawyers, /login etc. work on refresh
 <IfModule mod_rewrite.c>
   RewriteEngine On

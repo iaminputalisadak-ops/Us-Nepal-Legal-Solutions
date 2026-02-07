@@ -1,3 +1,14 @@
+# Fix MIME type for JavaScript (prevents "application/octet-stream" error on cPanel)
+<IfModule mod_mime.c>
+  AddType application/javascript .js .mjs
+  AddType text/javascript .js .mjs
+</IfModule>
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|mjs)$">
+    Header set Content-Type "application/javascript; charset=utf-8"
+  </FilesMatch>
+</IfModule>
+
 # React SPA - route all requests to index.html
 # For cPanel: upload to public_html/ root alongside index.html and api/ folder
 <IfModule mod_rewrite.c>

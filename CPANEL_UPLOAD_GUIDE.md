@@ -30,6 +30,12 @@ Upload these files **from `dist/`** (project root folder) into **`public_html/`*
 **If .htaccess is missing in dist/**, create it manually in `public_html/` with:
 
 ```
+# Fix MIME type for JavaScript (prevents blank screen on cPanel)
+<IfModule mod_mime.c>
+  AddType application/javascript .js .mjs
+  AddType text/javascript .js .mjs
+</IfModule>
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
@@ -52,7 +58,7 @@ public_html/
 ├── robots.txt
 ├── sitemap.xml
 ├── .htaccess
-├── assets/
+├── assets/                 ← Upload entire folder including .htaccess (fixes MIME type)
 └── api/                    ← Upload entire api folder here
     ├── .htaccess
     ├── config.php
