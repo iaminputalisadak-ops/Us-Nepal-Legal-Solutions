@@ -39,7 +39,7 @@ export default function Login({ onLogin, onCancel }) {
               "Backend not found (404).\n\nFix:\n1) Make sure XAMPP Apache is running.\n2) Copy your project `backend` folder to: C:\\xampp\\htdocs\\backend\\\n3) Test in browser:\n   - http://localhost/backend/login.php\n   - http://localhost:8080/backend/login.php\n\n(Whichever one opens, that is your Apache port.)"
           );
         } else if (response.status === 500) {
-          const dbHint = "CPANEL: 1) Copy config.cpanel.php.example → config.cpanel.php in public_html/backend/\n2) Add your cPanel MySQL user, password, database\n3) MySQL Databases → Add User To Database → grant ALL PRIVILEGES\n4) Test: usnepallegalsolutions.com/backend/db-check.php\n\nLOCAL: 1) Start MySQL in XAMPP 2) Run localhost:8080/backend/setup_full.php";
+          const dbHint = "Edit backend/config.db.php (copy from config.db.php.example). Add your MySQL username, password, database name. LOCAL: port 3308. CPANEL: port 3306.";
           setError(serverMessage || `Database connection failed.\n\n${dbHint}`);
         } else {
           setError(serverMessage || `Server error (${response.status}). Please try again.`);

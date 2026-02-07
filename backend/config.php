@@ -1,20 +1,16 @@
 <?php
 /**
- * CONFIG - Database and app settings.
- * On cPanel: create config.db.php with your MySQL credentials (see config.db.php.example)
+ * Main config - loads database credentials from config.db.php (THE single source).
+ * All backend files require this file. Do NOT put credentials here - use config.db.php only.
  */
-ob_start(); // Prevent any accidental output from breaking JSON
+ob_start();
 
-$configDir = __DIR__;
-$loaded = null;
-
-// Load DB config - try each file until one works
-foreach (['config.db.php', 'config.cpanel.php', 'config.local.php'] as $f) {
-    $p = $configDir . DIRECTORY_SEPARATOR . $f;
-    if (file_exists($p)) {
-        require $p;
-        $loaded = $f;
-        break;
+// Load config.db.php - same folder as this file (use realpath for reliability)
+if (!defined('DB_HOST')) {
+    $base = realpath(dirname(__FILE__)) ?: __DIR__;
+    $configFile = $base . DIRECTORY_SEPARATOR . 'config.db.php';
+    if (file_exists($configFile)) {
+        require_once $configFile;
     }
 }
 
@@ -64,7 +60,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
 }
 
 function getDBConnection() {
-    global $loaded;
     try {
         $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
         if ($conn->connect_error) {
@@ -83,9 +78,7 @@ function getDBConnection() {
         return $conn;
     } catch (Exception $e) {
         ob_end_clean();
-        $port = defined('DB_PORT') ? DB_PORT : 3308;
-        $msg = 'Database connection failed. Loaded: ' . ($loaded ?? 'none') . '. Port: ' . $port . '. Error: ' . $e->getMessage();
-        $msg .= '. Fix: Create config.db.php in backend/ with your cPanel MySQL user, password, database, port 3306.';
+        $msg = 'Database connection failed. Edit backend/config.db.php with your username, password, database name. Error: ' . $e->getMessage();
         http_response_code(500);
         echo json_encode(['success' => false, 'message' => $msg]);
         exit();

@@ -1,19 +1,13 @@
 <?php
 /**
  * One-time database setup script.
- * Run this in your browser if you get "Table admins doesn't exist" error.
- * URL: http://localhost:8080/backend/setup.php
- *
- * Add ?reset=1 to drop and recreate the database (fixes "Tablespace exists" / corrupted tables).
+ * Run: http://localhost:8080/backend/setup.php
+ * Uses config.db.php for credentials (copy from config.db.php.example first).
  */
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'usneppal');
-define('DB_PORT', 3308);
+require_once __DIR__ . '/config.php';
 
 try {
     $conn = @new mysqli(DB_HOST, DB_USER, DB_PASS, '', DB_PORT);

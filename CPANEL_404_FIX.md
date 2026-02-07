@@ -77,12 +77,12 @@ If any of these return **404**, the `backend` folder or files are in the wrong p
 
 ---
 
-### 5. Create config.cpanel.php for Database
+### 5. Create config.db.php for Database
 
-**Use config.cpanel.php (not config.local.php) on cPanel** – this won't get overwritten when you re-upload the backend.
+**Use config.db.php (not config.local.php) on cPanel** – this won't get overwritten when you re-upload the backend.
 
-1. In `public_html/backend/`, copy `config.cpanel.php.example` to `config.cpanel.php`
-2. Edit `config.cpanel.php` with your cPanel MySQL user, password, database name
+1. In `public_html/backend/`, copy `config.db.php.example` to `config.db.php`
+2. Edit `config.db.php` with your cPanel MySQL user, password, database name
 3. MySQL Databases → Add User To Database → grant ALL PRIVILEGES
 4. Test: `https://usnepallegalsolutions.com/backend/db-check.php`
 

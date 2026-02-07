@@ -1,23 +1,22 @@
 <?php
 /**
- * Diagnostic: tests config loading (same as login.php).
- * Visit: https://usnepallegalsolutions.com/backend/login-test.php
+ * Test database connection. Uses config.db.php (same as all other backend files).
+ * Visit: https://yoursite.com/backend/login-test.php
  */
 header('Content-Type: text/html; charset=utf-8');
 
-echo "<h2>Login Flow Test</h2>";
+echo "<h2>Database Connection Test</h2>";
 
-$configDir = __DIR__;
-$loaded = null;
-foreach (['config.db.php', 'config.cpanel.php', 'config.local.php'] as $f) {
-    $p = $configDir . '/' . $f;
-    if (file_exists($p)) {
-        require $p;
-        $loaded = $f;
-        break;
-    }
+$configFile = __DIR__ . '/config.db.php';
+echo "<p>config.db.php exists: " . (file_exists($configFile) ? 'YES' : 'NO - copy from config.db.php.example') . "</p>";
+
+if (!file_exists($configFile)) {
+    echo "<p style='color:orange;'>Create config.db.php first, then refresh.</p>";
+    exit;
 }
-if (!$loaded) {
+require $configFile;
+
+if (!defined('DB_HOST')) {
     define('DB_HOST', 'localhost');
     define('DB_USER', 'root');
     define('DB_PASS', '');
@@ -25,14 +24,12 @@ if (!$loaded) {
     define('DB_PORT', 3308);
 }
 
-echo "<p>Loaded: " . ($loaded ?? 'defaults') . "</p>";
-
 echo "<p>DB_USER: " . htmlspecialchars(DB_USER) . " | DB_NAME: " . htmlspecialchars(DB_NAME) . " | Port: " . DB_PORT . "</p>";
 
-$conn = @new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, defined('DB_PORT') ? DB_PORT : 3306);
+$conn = @new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
 if ($conn->connect_error) {
     echo "<p style='color:red;'><strong>❌ Connection failed: " . htmlspecialchars($conn->connect_error) . "</strong></p>";
 } else {
-    echo "<p style='color:green;'><strong>✅ Connection OK - if login still fails, upload the latest config.php</strong></p>";
+    echo "<p style='color:green;'><strong>✅ Connection OK</strong></p>";
     $conn->close();
 }

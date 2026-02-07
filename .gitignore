@@ -12,8 +12,6 @@ dist/
 # Local/credential notes (do not commit)
 ADMIN_CREDENTIALS.txt
 ADMIN_LOGIN_INFO.txt
-backend/config.local.php
-backend/config.cpanel.php
 backend/config.db.php
 
 # Uploads / generated content (ignore uploaded images, keep folder structure)

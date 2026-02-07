@@ -11,15 +11,15 @@ This happens on the **live cPanel server** when the MySQL user is not properly l
 
 ## Step-by-Step Fix
 
-### 1. Create config.cpanel.php on the Server
+### 1. Create config.db.php on the Server
 
-**Use config.cpanel.php (NOT config.local.php) for cPanel.** This prevents your local config from overwriting it when you re-upload the backend.
+**config.db.php** is the single file for all database credentials (local and cPanel).
 
 In cPanel File Manager, go to `public_html/backend/`:
 
-1. Find **`config.cpanel.php.example`**
-2. **Copy** it and name the copy **`config.cpanel.php`** (or Rename)
-3. Edit **`config.cpanel.php`** and add your credentials:
+1. Find **`config.db.php.example`**
+2. **Copy** it and name the copy **`config.db.php`** (or Rename)
+3. Edit **`config.db.php`** and add your credentials:
 
 ```php
 <?php
@@ -58,7 +58,7 @@ The "Access denied" error usually means the user exists and the database exists,
 **Create the user:**
 - MySQL Databases → MySQL Users → Add New User
 - Username: `usnepallegalsolu_nepal` (or similar)
-- Password: choose a strong password and **save it** – you need it for config.cpanel.php
+- Password: choose a strong password and **save it** – you need it for config.db.php
 
 **Then do Step 2** – Add User To Database and grant ALL PRIVILEGES.
 
@@ -70,13 +70,13 @@ cPanel often adds a prefix. Your actual names might be:
 - `cpaneluser_usnepallegalsolu` (database)
 - `cpaneluser_nepal` (user)
 
-Check **MySQL Databases** → **Current Databases** and **Current Users** for the exact names. Use those exact names in config.cpanel.php.
+Check **MySQL Databases** → **Current Databases** and **Current Users** for the exact names. Use those exact names in config.db.php.
 
 ---
 
 ### 5. Use Port 3306
 
-cPanel MySQL uses port **3306**. Your config.cpanel.php **must** have:
+cPanel MySQL uses port **3306**. Your config.db.php **must** have:
 
 ```php
 define('DB_PORT', 3306);
@@ -86,8 +86,8 @@ define('DB_PORT', 3306);
 
 ## Quick Checklist
 
-- [ ] `config.cpanel.php` exists in `public_html/backend/` (copy from config.cpanel.php.example)
-- [ ] Password in config.cpanel.php matches the one set in cPanel
+- [ ] `config.db.php` exists in `public_html/backend/` (copy from config.db.php.example)
+- [ ] Password in config.db.php matches the one set in cPanel
 - [ ] User is linked to database (Add User To Database → ALL PRIVILEGES)
 - [ ] `DB_PORT` is **3306** (not 3308)
 - [ ] Username and database name match exactly what cPanel shows

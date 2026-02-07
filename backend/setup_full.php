@@ -3,20 +3,12 @@
  * Create NEW database with ALL tables and data.
  * Run once: http://localhost:8080/backend/setup_full.php
  *
- * This will:
- * 1. Drop the existing us_nepal_legal_db (if any)
- * 2. Create a fresh database
- * 3. Create all 17 tables
- * 4. Insert all default data (admin, lawyers, practice areas, etc.)
+ * Uses config.db.php for credentials (copy from config.db.php.example first).
  */
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'us_nepal_legal_db');
-define('DB_PORT', 3308);
+require_once __DIR__ . '/config.php';
 
 try {
     $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, '', DB_PORT);

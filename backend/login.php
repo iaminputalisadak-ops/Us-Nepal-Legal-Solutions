@@ -1,4 +1,10 @@
 <?php
+// Load config.db.php using realpath - same method as diagnose.php
+$backendDir = realpath(dirname(__FILE__)) ?: __DIR__;
+$dbConfig = $backendDir . DIRECTORY_SEPARATOR . 'config.db.php';
+if (file_exists($dbConfig)) {
+    require_once $dbConfig;
+}
 require_once 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
