@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /admin
+
+Sitemap: https://usnepallegalsolutions.com/sitemap.xml
+

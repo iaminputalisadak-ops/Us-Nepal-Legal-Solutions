@@ -1,13 +1,13 @@
 {
-  "name": "usnepallegalsolutions",
+  "name": "usnepallegalsolutions-frontend",
   "private": true,
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --config frontend/vite.config.js",
-    "start": "vite --config frontend/vite.config.js",
-    "build": "vite build --config frontend/vite.config.js && node frontend/scripts/copy-htaccess.cjs",
-    "preview": "vite preview --config frontend/vite.config.js"
+    "dev": "vite",
+    "start": "vite",
+    "build": "vite build && node scripts/copy-htaccess.cjs",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^41.4.2",

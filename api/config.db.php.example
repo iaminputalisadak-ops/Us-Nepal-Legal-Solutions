@@ -1,0 +1,18 @@
+<?php
+/**
+ * ============================================================
+ * DATABASE CREDENTIALS - THE ONLY FILE YOU EDIT
+ * ============================================================
+ * 
+ * 1. Copy this file to config.db.php (same folder)
+ * 2. Replace with YOUR database username, password, database name
+ * 3. Use this ONE file for LOCAL (XAMPP) and CPANEL
+ * 
+ * LOCAL (XAMPP):  Use root, empty password, port 3308
+ * CPANEL (live):  Use cPanel MySQL user, password, port 3306
+ */
+define('DB_HOST', 'localhost');
+define('DB_USER', 'root');              // Your MySQL username
+define('DB_PASS', '');                  // Your MySQL password
+define('DB_NAME', 'us_nepal_legal_db'); // Your database name
+define('DB_PORT', 3308);                // 3308 for XAMPP, 3306 for cPanel

@@ -1,4 +1,5 @@
-# SPA routing - /admin, /lawyers, /login etc. work on refresh
+# React SPA - route all requests to index.html
+# For cPanel: upload to public_html/ root alongside index.html and api/ folder
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
